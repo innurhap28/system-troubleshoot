@@ -39,14 +39,14 @@ orb -m "$VM_NAME" sudo apt-get update
 orb -m "$VM_NAME" sudo apt-get install -y procps iproute2 sysstat python3 python3-venv
 
 echo "앱 디렉터리와 테스트 API 키를 준비합니다."
-orb -m "$VM_NAME" mkdir -p agent-app/upload_files agent-app/api_keys agent-app/bin agent-app/logs agent-app/evidence
+orb -m "$VM_NAME" bash -lc 'mkdir -p "$HOME/agent-app/upload_files" "$HOME/agent-app/api_keys" "$HOME/agent-app/bin" "$HOME/agent-app/logs" "$HOME/agent-app/evidence"'
 orb -m "$VM_NAME" bash -lc 'printf "%s\n" "agent_api_key_test" > "$HOME/agent-app/api_keys/secret.key" && chmod 600 "$HOME/agent-app/api_keys/secret.key"'
 
 echo "앱과 과제 스크립트를 가상머신으로 복사합니다."
 orb push --machine "$VM_NAME" "$APP_BINARY" agent-app/bin/
 orb push --machine "$VM_NAME" "${PROJECT_DIR}/monitor.sh" agent-app/bin/
 orb push --machine "$VM_NAME" "${PROJECT_DIR}/scripts/run_case.sh" agent-app/bin/
-orb -m "$VM_NAME" chmod +x agent-app/bin/agent-leak-app-x86 agent-app/bin/monitor.sh agent-app/bin/run_case.sh
+orb -m "$VM_NAME" bash -lc 'chmod +x "$HOME/agent-app/bin/agent-leak-app-x86" "$HOME/agent-app/bin/monitor.sh" "$HOME/agent-app/bin/run_case.sh"'
 
 ENV_FILE="$(mktemp)"
 trap 'rm -f "$ENV_FILE"' EXIT
@@ -62,7 +62,7 @@ export CPU_MAX_OCCUPY="${CPU_MAX_OCCUPY:-50}"
 export MULTI_THREAD_ENABLE="${MULTI_THREAD_ENABLE:-true}"
 ENVIRONMENT
 orb push --machine "$VM_NAME" "$ENV_FILE" agent-app/env.sh
-orb -m "$VM_NAME" chmod 600 agent-app/env.sh
+orb -m "$VM_NAME" bash -lc 'chmod 600 "$HOME/agent-app/env.sh"'
 
 cat <<INSTRUCTIONS
 
