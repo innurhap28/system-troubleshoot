@@ -21,7 +21,26 @@ if [[ -f "$LOG_FILE" ]] && (( $(wc -c < "$LOG_FILE") >= MAX_SIZE )); then
     mv "$LOG_FILE" "${LOG_FILE}.1"
 fi
 
-PID="${APP_PID:-$(pgrep -f "${APP_NAME}" | head -n 1 || true)}"
+ROOT_PID="${APP_PID:-$(pgrep -f "${APP_NAME}" | head -n 1 || true)}"
+PIDS=()
+if [[ -n "$ROOT_PID" ]]; then
+    PIDS+=("$ROOT_PID")
+    collect_descendants() {
+        local parent="$1" child
+        while read -r child; do
+            [[ -n "$child" ]] || continue
+            PIDS+=("$child")
+            collect_descendants "$child"
+        done < <(pgrep -P "$parent" 2>/dev/null || true)
+    }
+    collect_descendants "$ROOT_PID"
+fi
+LIVE_PIDS=()
+for candidate in "${PIDS[@]}"; do
+    if ps -p "$candidate" -o pid= >/dev/null 2>&1; then
+        LIVE_PIDS+=("$candidate")
+    fi
+done
 PORT_STATE="닫힘"
 if ss -H -lnt "sport = :${APP_PORT}" 2>/dev/null | grep -q .; then
     PORT_STATE="열림"
@@ -29,16 +48,17 @@ else
     PORT_STATE="닫힘"
 fi
 
-if [[ -z "$PID" ]] || ! ps -p "$PID" -o pid= >/dev/null 2>&1; then
+if [[ -z "$ROOT_PID" || "${#LIVE_PIDS[@]}" -eq 0 ]]; then
     LINE="[$TIMESTAMP] 프로세스:${APP_NAME} 상태:종료 포트:${APP_PORT}/${PORT_STATE}"
     echo "$LINE" | tee -a "$LOG_FILE"
     exit 1
 fi
 
-# ps에서 대상 프로세스의 CPU 사용률과 실제 상주 메모리(RSS)를 읽습니다.
-read -r CPU RSS_KB ELAPSED < <(ps -p "$PID" -o %cpu=,rss=,etime= | awk '{$1=$1; print $1, $2, $3}')
+# 앱과 자식 프로세스 중 RSS가 가장 큰 프로세스를 관제 대상으로 선택합니다.
+PID_LIST=$(IFS=,; echo "${LIVE_PIDS[*]}")
+read -r PID CPU RSS_KB ELAPSED < <(ps -p "$PID_LIST" -o pid=,%cpu=,rss=,etime= | awk '$3 > max {max=$3; pid=$1; cpu=$2; rss=$3; elapsed=$4} END {print pid, cpu, rss, elapsed}')
 MEM_MB=$(awk -v kb="${RSS_KB:-0}" 'BEGIN {printf "%.1f", kb/1024}')
-LINE="[$TIMESTAMP] 프로세스:${APP_NAME} PID:${PID} CPU:${CPU:-0}% 상주메모리:${MEM_MB}MB 실행시간:${ELAPSED:-알수없음} 포트:${APP_PORT}/${PORT_STATE}"
+LINE="[$TIMESTAMP] 프로세스:${APP_NAME} PID:${PID} 부모PID:${ROOT_PID} CPU:${CPU:-0}% 상주메모리:${MEM_MB}MB 실행시간:${ELAPSED:-알수없음} 포트:${APP_PORT}/${PORT_STATE}"
 echo "$LINE" | tee -a "$LOG_FILE"
 
 if [[ "$PORT_STATE" != "열림" ]]; then

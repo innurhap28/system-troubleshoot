@@ -70,13 +70,24 @@ echo "실행 로그: ${APP_LOG}"
 echo "교착상태처럼 앱이 끝나지 않으면 Ctrl-C를 눌러 앱은 유지하고 증거 수집만 멈출 수 있습니다."
 
 capture_process_state() {
+    PROCESS_PIDS=("$APP_PID")
+    collect_descendants() {
+        local parent="$1" child
+        while read -r child; do
+            [[ -n "$child" ]] || continue
+            PROCESS_PIDS+=("$child")
+            collect_descendants "$child"
+        done < <(pgrep -P "$parent" 2>/dev/null || true)
+    }
+    collect_descendants "$APP_PID"
+    PROCESS_PID_LIST=$(IFS=,; echo "${PROCESS_PIDS[*]}")
     {
         echo "===== $(date '+%Y-%m-%d %H:%M:%S') 프로세스 상태 ====="
-        ps -p "$APP_PID" -o pid,ppid,stat,%cpu,%mem,rss,vsz,etime,comm,args
+        ps -p "$PROCESS_PID_LIST" --forest -o pid,ppid,stat,%cpu,%mem,rss,vsz,etime,comm,args
         echo "----- 스레드 상태 -----"
-        ps -L -p "$APP_PID" -o pid,tid,stat,%cpu,comm
+        ps -L -p "$PROCESS_PID_LIST" -o pid,tid,stat,%cpu,comm
         echo "----- 스레드별 top -----"
-        top -H -b -n 1 -p "$APP_PID" | sed -n '1,25p'
+        top -H -b -n 1 -p "$PROCESS_PID_LIST" | sed -n '1,35p'
         echo
     } >> "$PROCESS_LOG" 2>&1
 }
