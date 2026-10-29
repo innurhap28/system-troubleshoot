@@ -47,7 +47,7 @@ source ~/agent-app/env.sh
 | `cpu` | `CPU_MAX_OCCUPY=10`% | `CPU_MAX_OCCUPY=100`% |
 | `deadlock` | `MULTI_THREAD_ENABLE=true` | `MULTI_THREAD_ENABLE=false` |
 
-예를 들어 CPU 조정 결과는 `~/agent-app/bin/run_case.sh cpu adjusted`로 실행합니다. 앱은 root가 아닌 VM 사용자로 실행됩니다. 교착상태처럼 앱이 종료되지 않으면 `Ctrl-C`로 관제 수집만 멈출 수 있으며, 실행 중인 앱은 남겨 두어 PID와 스레드 상태를 추가로 확인할 수 있습니다. 종료할 때 출력된 `kill <PID>` 명령을 사용합니다.
+예를 들어 CPU 조정 결과는 `~/agent-app/bin/run_case.sh cpu adjusted`로 실행합니다. OOM·CPU 비교는 교착상태가 섞이지 않도록 멀티스레드를 끄며, 교착상태는 별도 케이스에서만 비교합니다. 앱은 root가 아닌 VM 사용자로 실행됩니다. 교착상태처럼 앱이 종료되지 않으면 `Ctrl-C` 또는 `OBSERVE_SECONDS=30`으로 관제 수집만 멈출 수 있으며, 실행 중인 앱은 남겨 두어 PID와 스레드 상태를 추가로 확인할 수 있습니다. 종료할 때 출력된 `kill <PID>` 명령을 사용합니다.
 
 각 실행 자료는 `~/agent-app/evidence/<장애유형>/<실행시각>_<비교설정>/`에 저장됩니다.
 

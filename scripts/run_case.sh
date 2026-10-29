@@ -31,10 +31,10 @@ MEMORY_LIMIT="${MEMORY_LIMIT:-256}"
 CPU_MAX_OCCUPY="${CPU_MAX_OCCUPY:-50}"
 MULTI_THREAD_ENABLE="${MULTI_THREAD_ENABLE:-true}"
 case "$CASE_NAME:$PROFILE" in
-    oom:baseline) MEMORY_LIMIT=128 ;;
-    oom:adjusted) MEMORY_LIMIT=512 ;;
-    cpu:baseline) CPU_MAX_OCCUPY=10 ;;
-    cpu:adjusted) CPU_MAX_OCCUPY=100 ;;
+    oom:baseline) MEMORY_LIMIT=128; MULTI_THREAD_ENABLE=false ;;
+    oom:adjusted) MEMORY_LIMIT=512; MULTI_THREAD_ENABLE=false ;;
+    cpu:baseline) CPU_MAX_OCCUPY=10; MULTI_THREAD_ENABLE=false ;;
+    cpu:adjusted) CPU_MAX_OCCUPY=100; MULTI_THREAD_ENABLE=false ;;
     deadlock:baseline) MULTI_THREAD_ENABLE=true ;;
     deadlock:adjusted) MULTI_THREAD_ENABLE=false ;;
 esac
@@ -47,8 +47,14 @@ PROCESS_LOG="${RUN_DIR}/process-snapshots.log"
 MONITOR_LOG="${RUN_DIR}/monitor-snapshots.log"
 PID_FILE="${RUN_DIR}/app.pid"
 INTERVAL="${EVIDENCE_INTERVAL:-3}"
+OBSERVE_SECONDS="${OBSERVE_SECONDS:-0}"
 STOP_COLLECTION=0
 trap 'STOP_COLLECTION=1' INT TERM
+if [[ ! "$OBSERVE_SECONDS" =~ ^[0-9]+$ ]]; then
+    echo "오류: 관측 시간은 0 이상의 정수(초)여야 합니다." >&2
+    exit 2
+fi
+START_SECONDS=$SECONDS
 
 echo "장애 유형: ${CASE_NAME} / 비교 설정: ${PROFILE}"
 echo "실행 설정: 메모리 제한 ${MEMORY_LIMIT} MB, CPU 점유 상한 ${CPU_MAX_OCCUPY}%, 다중 스레드 ${MULTI_THREAD_ENABLE}"
@@ -96,6 +102,9 @@ while kill -0 "$APP_PID" 2>/dev/null && [[ "$STOP_COLLECTION" -eq 0 ]]; do
     capture_process_state
     APP_PID="$APP_PID" AGENT_LOG_DIR="$AGENT_LOG_DIR" "$MONITOR" >> "$MONITOR_LOG" 2>&1 || true
     sleep "$INTERVAL" || true
+    if (( OBSERVE_SECONDS > 0 && SECONDS - START_SECONDS >= OBSERVE_SECONDS )); then
+        STOP_COLLECTION=1
+    fi
 done
 
 if kill -0 "$APP_PID" 2>/dev/null; then
