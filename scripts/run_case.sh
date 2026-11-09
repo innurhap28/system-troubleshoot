@@ -32,7 +32,7 @@ if [[ ! -x "$APP_BIN" || ! -x "$MONITOR" ]]; then
 fi
 
 # 장애 유형별 실행 설정
-MEMORY_LIMIT="${MEMORY_LIMIT:-256}"
+MEMORY_LIMIT="${MEMORY_LIMIT:-512}"
 CPU_MAX_OCCUPY="${CPU_MAX_OCCUPY:-50}"
 MULTI_THREAD_ENABLE="${MULTI_THREAD_ENABLE:-true}"
 
@@ -48,7 +48,7 @@ esac
 INTERVAL="${EVIDENCE_INTERVAL:-3}"
 OBSERVE_SECONDS="${OBSERVE_SECONDS:-0}"
 BOOT_TIMEOUT="${BOOT_TIMEOUT:-30}"
-MAX_RUNTIME="${MAX_RUNTIME:-200}"
+MAX_RUNTIME="${MAX_RUNTIME:-180}"
 
 if [[ ! "$OBSERVE_SECONDS" =~ ^[0-9]+$ ]]; then
     echo "오류: 관측 시간은 0 이상의 정수(초)여야 합니다." >&2
