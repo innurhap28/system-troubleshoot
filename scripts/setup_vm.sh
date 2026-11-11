@@ -16,7 +16,7 @@ if [[ ! -f "$APP_BINARY" ]]; then
     echo "오류: 앱 바이너리가 없습니다: $APP_BINARY" >&2
     exit 1
 fi
-if [[ ! -f "${PROJECT_DIR}/monitor.sh" || ! -f "${PROJECT_DIR}/scripts/run_case.sh" ]]; then
+if [[ ! -f "${PROJECT_DIR}/monitor.sh" || ! -f "${PROJECT_DIR}/scripts/run_case.sh" || ! -f "${PROJECT_DIR}/scripts/cpu_spike.sh"  || ! -f "${PROJECT_DIR}/scripts/deadlock_test.sh" ]]; then
     echo "오류: 프로젝트의 관제 또는 실행 스크립트를 찾을 수 없습니다." >&2
     exit 1
 fi
@@ -46,7 +46,9 @@ echo "앱과 과제 스크립트를 가상머신으로 복사합니다."
 orb push --machine "$VM_NAME" "$APP_BINARY" agent-app/bin/
 orb push --machine "$VM_NAME" "${PROJECT_DIR}/monitor.sh" agent-app/bin/
 orb push --machine "$VM_NAME" "${PROJECT_DIR}/scripts/run_case.sh" agent-app/bin/
-orb -m "$VM_NAME" bash -lc 'chmod +x "$HOME/agent-app/bin/agent-leak-app-x86" "$HOME/agent-app/bin/monitor.sh" "$HOME/agent-app/bin/run_case.sh"'
+orb push --machine "$VM_NAME" "${PROJECT_DIR}/scripts/cpu_spike.sh" agent-app/bin/
+orb push --machine "$VM_NAME" "${PROJECT_DIR}/scripts/deadlock_test.sh" agent-app/bin/
+orb -m "$VM_NAME" bash -lc 'chmod +x "$HOME/agent-app/bin/agent-leak-app-x86" "$HOME/agent-app/bin/monitor.sh" "$HOME/agent-app/bin/run_case.sh" "$HOME/agent-app/bin/cpu_spike.sh" "$HOME/agent-app/bin/deadlock_test.sh"'
 
 ENV_FILE="$(mktemp)"
 trap 'rm -f "$ENV_FILE"' EXIT

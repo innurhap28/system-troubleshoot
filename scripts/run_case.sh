@@ -25,9 +25,21 @@ source "${HOME}/agent-app/env.sh"
 
 APP_BIN="${AGENT_HOME}/bin/agent-leak-app-x86"
 MONITOR="${AGENT_HOME}/bin/monitor.sh"
+CPU_SPIKE="${AGENT_HOME}/bin/cpu_spike.sh"
+DEADLOCK_TEST="${AGENT_HOME}/bin/deadlock_test.sh"
 
 if [[ ! -x "$APP_BIN" || ! -x "$MONITOR" ]]; then
     echo "오류: 앱 또는 관제 스크립트가 없습니다." >&2
+    exit 1
+fi
+
+if [[ "$CASE_NAME" == "cpu" && ! -x "$CPU_SPIKE" ]]; then
+    echo "오류: CPU 테스트 스크립트가 없습니다: $CPU_SPIKE" >&2
+    exit 1
+fi
+
+if [[ "$CASE_NAME" == "deadlock" && ! -x "$DEADLOCK_TEST" ]]; then
+    echo "오류: Deadlock 전용 진단 스크립트가 없습니다: $DEADLOCK_TEST" >&2
     exit 1
 fi
 
@@ -176,7 +188,9 @@ mkdir -p "$RUN_DIR"
 APP_LOG="${RUN_DIR}/application.log"
 PROCESS_LOG="${RUN_DIR}/process-snapshots.log"
 MONITOR_LOG="${RUN_DIR}/monitor-snapshots.log"
+CPU_LOG="${RUN_DIR}/cpu-process.log"
 PID_FILE="${RUN_DIR}/app.pid"
+DEADLOCK_LOG="${RUN_DIR}/deadlock-diagnostics.log"
 
 # 동일 파일시스템 내에서 이동하여 앱의 기존 출력 FD 유지
 mv "$BOOT_LOG" "$APP_LOG"
@@ -235,6 +249,16 @@ while kill -0 "$APP_PID" 2>/dev/null && [[ "$STOP_COLLECTION" -eq 0 ]]; do
     fi
 
     capture_process_state
+
+    # CPU 케이스는 별도 스크립트로 대상 앱 프로세스의 순간 CPU 사용률을 기록합니다.
+    if [[ "$CASE_NAME" == "cpu" ]]; then
+        "$CPU_SPIKE" "$APP_PID" "$CPU_LOG" || true
+    fi
+
+    # Deadlock 케이스는 별도 스크립트로 PID/스레드 대기 상태와 마지막 앱 로그를 별도 수집
+    if [[ "$CASE_NAME" == "deadlock" ]]; then
+        "$DEADLOCK_TEST" "$APP_PID" "$APP_LOG" "$DEADLOCK_LOG" || true
+    fi
 
     APP_PID="$APP_PID" AGENT_LOG_DIR="$AGENT_LOG_DIR" \
         "$MONITOR" >> "$MONITOR_LOG" 2>&1 || true
@@ -295,7 +319,13 @@ fi
 echo "저장된 증거:"
 echo "  앱 로그: ${APP_LOG}"
 echo "  프로세스/스레드 관측: ${PROCESS_LOG}"
+if [[ "$CASE_NAME" == "cpu" ]]; then
+    echo "  프로세스 CPU 관측: ${CPU_LOG}"
+fi
 echo "  monitor.sh 결과: ${MONITOR_LOG}"
 echo "  PID 기록: ${PID_FILE}"
+if [[ "$CASE_NAME" == "deadlock" ]]; then
+    echo "  Deadlock 진단: ${DEADLOCK_LOG}"
+fi
 
 exit 0
