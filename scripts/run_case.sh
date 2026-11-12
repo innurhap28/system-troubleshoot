@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 set -uo pipefail
 
@@ -25,11 +24,17 @@ source "${HOME}/agent-app/env.sh"
 
 APP_BIN="${AGENT_HOME}/bin/agent-leak-app-x86"
 MONITOR="${AGENT_HOME}/bin/monitor.sh"
+OOM_TEST="${AGENT_HOME}/bin/oom_test.sh"
 CPU_SPIKE="${AGENT_HOME}/bin/cpu_spike.sh"
 DEADLOCK_TEST="${AGENT_HOME}/bin/deadlock_test.sh"
 
 if [[ ! -x "$APP_BIN" || ! -x "$MONITOR" ]]; then
     echo "오류: 앱 또는 관제 스크립트가 없습니다." >&2
+    exit 1
+fi
+
+if [[ "$CASE_NAME" == "oom" && ! -x "$OOM_TEST" ]]; then
+    echo "오류: OOM 전용 진단 스크립트가 없습니다: $OOM_TEST" >&2
     exit 1
 fi
 
@@ -45,16 +50,17 @@ fi
 
 # 장애 유형별 실행 설정
 MEMORY_LIMIT="${MEMORY_LIMIT:-512}"
-CPU_MAX_OCCUPY="${CPU_MAX_OCCUPY:-50}"
-MULTI_THREAD_ENABLE="${MULTI_THREAD_ENABLE:-true}"
+CPU_MAX_OCCUPY="${CPU_MAX_OCCUPY:-10}"
+MULTI_THREAD_ENABLE="${MULTI_THREAD_ENABLE:-false}"
 
 case "$CASE_NAME:$PROFILE" in
-    oom:baseline) MEMORY_LIMIT=128; MULTI_THREAD_ENABLE=false ;;
-    oom:adjusted) MEMORY_LIMIT=512; MULTI_THREAD_ENABLE=false ;;
-    cpu:baseline) CPU_MAX_OCCUPY=10; MULTI_THREAD_ENABLE=false ;;
-    cpu:adjusted) CPU_MAX_OCCUPY=100; MULTI_THREAD_ENABLE=false ;;
+    oom:baseline) MEMORY_LIMIT=256 ;;
+    oom:adjusted) MEMORY_LIMIT=512 ;;
+    cpu:baseline) CPU_MAX_OCCUPY=80;;
+    cpu:adjusted) CPU_MAX_OCCUPY=10 ;;
     deadlock:baseline) MULTI_THREAD_ENABLE=true ;;
-    deadlock:adjusted) MULTI_THREAD_ENABLE=false ;;
+    deadlock:adjusted)  ;;
+    *) echo "오류: 지원되지 않는 케이스 조합입니다: ${CASE_NAME}:${PROFILE}" >&2; exit 2 ;;
 esac
 
 INTERVAL="${EVIDENCE_INTERVAL:-3}"
@@ -136,8 +142,9 @@ while (( SECONDS - BOOT_START < BOOT_TIMEOUT )); do
         break
     fi
 
-    # 부팅 성공 전에 앱이 종료된 경우
-    if ! kill -0 "$APP_PID" 2>/dev/null; then
+    # 부팅 성공 전에 앱이 종료되었거나 좀비 상태가 된 경우
+    APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+    if [[ -z "$APP_STATE" || "$APP_STATE" == Z* || "$APP_STATE" == X* ]]; then
         break
     fi
 
@@ -147,11 +154,13 @@ done
 # 부팅 실패 / 중단 / 타임아웃 처리
 if (( BOOT_OK == 0 )); then
 
-    if kill -0 "$APP_PID" 2>/dev/null; then
+    APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+    if [[ -n "$APP_STATE" && "$APP_STATE" != Z* && "$APP_STATE" != X* ]]; then
         kill -TERM "$APP_PID" 2>/dev/null || true
         sleep 2
 
-        if kill -0 "$APP_PID" 2>/dev/null; then
+        APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+        if [[ -n "$APP_STATE" && "$APP_STATE" != Z* && "$APP_STATE" != X* ]]; then
             kill -KILL "$APP_PID" 2>/dev/null || true
         fi
     fi
@@ -190,6 +199,7 @@ PROCESS_LOG="${RUN_DIR}/process-snapshots.log"
 MONITOR_LOG="${RUN_DIR}/monitor-snapshots.log"
 CPU_LOG="${RUN_DIR}/cpu-process.log"
 PID_FILE="${RUN_DIR}/app.pid"
+OOM_LOG="${RUN_DIR}/oom-diagnostics.log"
 DEADLOCK_LOG="${RUN_DIR}/deadlock-diagnostics.log"
 
 # 동일 파일시스템 내에서 이동하여 앱의 기존 출력 FD 유지
@@ -238,7 +248,13 @@ capture_process_state() {
 }
 
 # 앱 실행 중 관제 데이터 수집
-while kill -0 "$APP_PID" 2>/dev/null && [[ "$STOP_COLLECTION" -eq 0 ]]; do
+while [[ "$STOP_COLLECTION" -eq 0 ]]; do
+
+    # kill -0만으로는 종료된 좀비 프로세스를 구분할 수 없으므로 상태를 함께 확인합니다.
+    APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+    if [[ -z "$APP_STATE" || "$APP_STATE" == Z* || "$APP_STATE" == X* ]]; then
+        break
+    fi
 
     # 최대 실행 시간 초과 확인
     if (( SECONDS - APP_START_SECONDS >= MAX_RUNTIME )); then
@@ -249,6 +265,11 @@ while kill -0 "$APP_PID" 2>/dev/null && [[ "$STOP_COLLECTION" -eq 0 ]]; do
     fi
 
     capture_process_state
+
+    # OOM 케이스는 별도 스크립트로 메모리 사용량과 MemoryGuard 로그를 수집합니다.
+    if [[ "$CASE_NAME" == "oom" ]]; then
+        "$OOM_TEST" "$APP_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
+    fi
 
     # CPU 케이스는 별도 스크립트로 대상 앱 프로세스의 순간 CPU 사용률을 기록합니다.
     if [[ "$CASE_NAME" == "cpu" ]]; then
@@ -271,19 +292,26 @@ while kill -0 "$APP_PID" 2>/dev/null && [[ "$STOP_COLLECTION" -eq 0 ]]; do
     fi
 done
 
+# 종료 직전/직후의 최종 메모리 상태와 MemoryGuard 로그를 보존합니다.
+if [[ "$CASE_NAME" == "oom" ]]; then
+    "$OOM_TEST" "$APP_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
+fi
+
 # 종료 또는 수집 중단 처리
 if (( TIME_LIMIT_REACHED )); then
 
     echo "최대 실행 시간에 도달했습니다. 앱을 종료합니다."
 
-    if kill -0 "$APP_PID" 2>/dev/null; then
+    APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+    if [[ -n "$APP_STATE" && "$APP_STATE" != Z* && "$APP_STATE" != X* ]]; then
         kill -TERM "$APP_PID" 2>/dev/null || true
 
         # 정상 종료 대기
         sleep 2
 
         # 아직 살아 있다면 SIGKILL로 강제 종료
-        if kill -0 "$APP_PID" 2>/dev/null; then
+        APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+        if [[ -n "$APP_STATE" && "$APP_STATE" != Z* && "$APP_STATE" != X* ]]; then
             echo "정상 종료되지 않아 SIGKILL을 전송합니다."
             kill -KILL "$APP_PID" 2>/dev/null || true
         fi
@@ -296,7 +324,8 @@ if (( TIME_LIMIT_REACHED )); then
 
     echo "앱이 최대 실행 시간 제한으로 종료되었습니다."
 
-elif kill -0 "$APP_PID" 2>/dev/null; then
+elif APP_STATE="$(ps -p "$APP_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')" &&
+     [[ -n "$APP_STATE" && "$APP_STATE" != Z* && "$APP_STATE" != X* ]]; then
 
     echo "증거 수집을 멈췄습니다. 앱은 계속 실행 중입니다(PID=${APP_PID})."
     echo "수동 종료 명령: kill ${APP_PID}"
@@ -319,6 +348,9 @@ fi
 echo "저장된 증거:"
 echo "  앱 로그: ${APP_LOG}"
 echo "  프로세스/스레드 관측: ${PROCESS_LOG}"
+if [[ "$CASE_NAME" == "oom" ]]; then
+    echo "  OOM 진단: ${OOM_LOG}"
+fi
 if [[ "$CASE_NAME" == "cpu" ]]; then
     echo "  프로세스 CPU 관측: ${CPU_LOG}"
 fi
