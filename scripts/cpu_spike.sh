@@ -100,7 +100,7 @@ fi
 
     echo '--- Host top snapshot ---'
     if command -v top >/dev/null 2>&1; then
-        top -b -n 2 -d 1 -o %CPU 2>&1 | sed -n '/PID USER/,+8p' | tail -n 9 || true
+        top -b -n 1 -p "$APP_PID" 2>&1 | sed -n '1,20p' || true
     else
         echo 'top command unavailable'
     fi

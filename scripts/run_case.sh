@@ -4,6 +4,7 @@ set -uo pipefail
 # 장애 유형별 환경값으로 앱을 실행하고, 실행 과정과 진단 증거를 보존합니다.
 
 SCRIPT_NAME="${0##*/}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CASE_NAME="${1:-}"
 PROFILE="${2:-baseline}"
 
@@ -35,35 +36,49 @@ case "$PROFILE" in
     *) error "비교 설정은 baseline 또는 adjusted여야 합니다."; usage; exit 2 ;;
 esac
 
-ENV_FILE="${HOME}/agent-app/env.sh"
-if [[ ! -r "$ENV_FILE" ]]; then
-    error "환경 설정 파일을 읽을 수 없습니다: $ENV_FILE"
-    exit 1
+# GitHub 기준 배포는 ~/.bashrc에 환경변수를 등록하며 env.sh는 필수가 아니다.
+# 별도 env 파일을 쓰는 환경도 지원하고, 미설정 값은 기준 저장소의 배포 경로로 채운다.
+ENV_FILE="${AGENT_ENV_FILE:-${HOME}/agent-app/env.sh}"
+if [[ -r "$ENV_FILE" ]]; then
+    # shellcheck source=/dev/null
+    if ! source "$ENV_FILE"; then
+        error "환경 설정 파일을 불러오지 못했습니다: $ENV_FILE"
+        exit 1
+    fi
 fi
 
-# env.sh에서 AGENT_HOME 및 앱 실행에 필요한 환경변수를 가져옵니다.
-# shellcheck source=/dev/null
-if ! source "$ENV_FILE"; then
-    error "환경 설정 파일을 불러오지 못했습니다: $ENV_FILE"
-    exit 1
-fi
-
-: "${AGENT_HOME:?env.sh에 AGENT_HOME이 설정되어야 합니다}"
-: "${AGENT_PORT:?env.sh에 AGENT_PORT가 설정되어야 합니다}"
-: "${AGENT_UPLOAD_DIR:?env.sh에 AGENT_UPLOAD_DIR가 설정되어야 합니다}"
-: "${AGENT_KEY_PATH:?env.sh에 AGENT_KEY_PATH가 설정되어야 합니다}"
-: "${AGENT_LOG_DIR:?env.sh에 AGENT_LOG_DIR가 설정되어야 합니다}"
+AGENT_HOME="${AGENT_HOME:-${HOME}/agent-app}"
+AGENT_PORT="${AGENT_PORT:-15034}"
+AGENT_UPLOAD_DIR="${AGENT_UPLOAD_DIR:-${AGENT_HOME}/upload_files}"
+AGENT_KEY_PATH="${AGENT_KEY_PATH:-${AGENT_HOME}/api_keys}"
+AGENT_LOG_DIR="${AGENT_LOG_DIR:-/var/log/agent-app}"
 
 if [[ ! -d "$AGENT_HOME" ]]; then
     error "AGENT_HOME 디렉터리가 없습니다: $AGENT_HOME"
     exit 1
 fi
 
-APP_BIN="${AGENT_HOME}/bin/agent-leak-app-x86"
-MONITOR="${AGENT_HOME}/bin/monitor.sh"
-OOM_TEST="${AGENT_HOME}/bin/oom_test.sh"
-CPU_SPIKE="${AGENT_HOME}/bin/cpu_spike.sh"
-DEADLOCK_TEST="${AGENT_HOME}/bin/deadlock_test.sh"
+# 기준 저장소의 기본 바이너리는 $AGENT_HOME/agent-leak-app 이다.
+# 기존 배포본(bin/agent-leak-app-x86)도 fallback으로 지원한다.
+APP_BIN="${APP_BIN:-}"
+if [[ -z "$APP_BIN" ]]; then
+    for candidate in \
+        "${AGENT_HOME}/agent-leak-app" \
+        "${AGENT_HOME}/bin/agent-leak-app" \
+        "${AGENT_HOME}/bin/agent-leak-app-x86"; do
+        if [[ -x "$candidate" ]]; then APP_BIN="$candidate"; break; fi
+    done
+fi
+MONITOR="${MONITOR:-${AGENT_HOME}/bin/monitor.sh}"
+OOM_TEST="${OOM_TEST:-${AGENT_HOME}/bin/oom_test.sh}"
+CPU_SPIKE="${CPU_SPIKE:-${AGENT_HOME}/bin/cpu_spike.sh}"
+DEADLOCK_TEST="${DEADLOCK_TEST:-${AGENT_HOME}/bin/deadlock_test.sh}"
+
+# 진단 스크립트는 AGENT_HOME/bin 배포본 또는 현재 run_case.sh와 같은 폴더에서 찾는다.
+[[ -x "$MONITOR" ]] || [[ ! -x "$SCRIPT_DIR/monitor.sh" ]] || MONITOR="$SCRIPT_DIR/monitor.sh"
+[[ -x "$OOM_TEST" ]] || [[ ! -x "$SCRIPT_DIR/oom_test.sh" ]] || OOM_TEST="$SCRIPT_DIR/oom_test.sh"
+[[ -x "$CPU_SPIKE" ]] || [[ ! -x "$SCRIPT_DIR/cpu_spike.sh" ]] || CPU_SPIKE="$SCRIPT_DIR/cpu_spike.sh"
+[[ -x "$DEADLOCK_TEST" ]] || [[ ! -x "$SCRIPT_DIR/deadlock_test.sh" ]] || DEADLOCK_TEST="$SCRIPT_DIR/deadlock_test.sh"
 
 if [[ ! -x "$APP_BIN" ]]; then
     error "앱 실행 파일이 없거나 실행 권한이 없습니다: $APP_BIN"
@@ -76,13 +91,13 @@ fi
 
 case "$CASE_NAME" in
     oom)
-        [[ -x "$OOM_TEST" ]] || { error "OOM 진단 스크립트가 없거나 실행 권한이 없습니다: $OOM_TEST"; exit 1; }
+        [[ -r "$OOM_TEST" ]] || { error "OOM 진단 스크립트를 읽을 수 없습니다: $OOM_TEST"; exit 1; }
         ;;
     cpu)
-        [[ -x "$CPU_SPIKE" ]] || { error "CPU 진단 스크립트가 없거나 실행 권한이 없습니다: $CPU_SPIKE"; exit 1; }
+        [[ -r "$CPU_SPIKE" ]] || { error "CPU 진단 스크립트를 읽을 수 없습니다: $CPU_SPIKE"; exit 1; }
         ;;
     deadlock)
-        [[ -x "$DEADLOCK_TEST" ]] || { error "Deadlock 진단 스크립트가 없거나 실행 권한이 없습니다: $DEADLOCK_TEST"; exit 1; }
+        [[ -r "$DEADLOCK_TEST" ]] || { error "Deadlock 진단 스크립트를 읽을 수 없습니다: $DEADLOCK_TEST"; exit 1; }
         ;;
 esac
 
@@ -119,7 +134,12 @@ esac
 INTERVAL="${EVIDENCE_INTERVAL:-3}"
 OBSERVE_SECONDS="${OBSERVE_SECONDS:-0}"
 BOOT_TIMEOUT="${BOOT_TIMEOUT:-30}"
-MAX_RUNTIME="${MAX_RUNTIME:-180}"
+case "$CASE_NAME" in
+    oom)      DEFAULT_MAX_RUNTIME=1500 ;;  # 기준 저장소: 25분
+    cpu)      DEFAULT_MAX_RUNTIME=900 ;;   # 기준 저장소: 15분
+    deadlock) DEFAULT_MAX_RUNTIME=600 ;;  # 기준 저장소: 10분
+esac
+MAX_RUNTIME="${MAX_RUNTIME:-$DEFAULT_MAX_RUNTIME}"
 
 # sleep이 허용하는 양의 정수 또는 소수 초 형식만 허용합니다.
 if [[ ! "$INTERVAL" =~ ^([0-9]+([.][0-9]*)?|[.][0-9]+)$ ]] || \
@@ -174,7 +194,11 @@ if ! RUN_DIR="$(mktemp -d "${RUN_BASE}/${RUN_STAMP}_${PROFILE}_XXXXXX")"; then
     exit 1
 fi
 
-APP_LOG="${RUN_DIR}/application.log"
+RUN_AGENT_LOG_DIR="${RUN_DIR}/app-logs"
+mkdir -p "$RUN_AGENT_LOG_DIR"
+APP_LOG="${RUN_AGENT_LOG_DIR}/agent_app.log"
+: > "$APP_LOG"
+APP_STDOUT_LOG="${RUN_DIR}/application-stdout.log"
 PROCESS_LOG="${RUN_DIR}/process-snapshots.log"
 MONITOR_LOG="${RUN_DIR}/monitor-snapshots.log"
 CPU_LOG="${RUN_DIR}/cpu-process.log"
@@ -201,6 +225,7 @@ CONFIG_CREATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
 CONFIG
 
 APP_PID=""
+TARGET_PID=""
 APP_STATUS="not_started"
 RUN_RESULT="not_started"
 STOP_COLLECTION=0
@@ -217,6 +242,7 @@ write_summary() {
         echo "PROFILE=${PROFILE}"
         echo "RESULT=${RUN_RESULT}"
         echo "APP_PID=${APP_PID:-unknown}"
+        echo "TARGET_PID=${TARGET_PID:-unknown}"
         echo "APP_EXIT_STATUS=${APP_STATUS}"
         echo "STARTED_AT=$(date -d "@${RUN_START_EPOCH}" '+%Y-%m-%d %H:%M:%S %z' 2>/dev/null || echo "$RUN_START_EPOCH")"
         echo "FINISHED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')"
@@ -238,28 +264,92 @@ app_is_running() {
     [[ -n "$state" && "$state" != Z* && "$state" != X* ]]
 }
 
+target_is_running() {
+    local state
+
+    [[ -n "$TARGET_PID" ]] || return 1
+    state="$(ps -p "$TARGET_PID" -o stat= 2>/dev/null | awk 'NR == 1 { print $1 }')"
+
+    [[ -n "$state" && "$state" != Z* && "$state" != X* ]]
+}
+
+# PyInstaller one-file 실행 파일은 부트로더(APP_PID)가 실제 Worker를 자식으로 띄운다.
+# Linux의 comm 이름은 15자로 잘릴 수 있으므로 pgrep -x basename 비교에 의존하지 않고,
+# /proc/<pid>/exe의 실제 실행 파일 경로를 비교한다. Worker가 없는 빌드라면 부모 PID를 사용한다.
+APP_BIN_REALPATH="$(readlink -f "$APP_BIN" 2>/dev/null || printf '%s' "$APP_BIN")"
+
+find_target_pid() {
+    local parent_pid="$1" child_pid child_exe child_realpath
+
+    for _ in 1 2 3 4 5; do
+        while read -r child_pid; do
+            [[ -n "$child_pid" ]] || continue
+            child_exe="$(readlink "/proc/${child_pid}/exe" 2>/dev/null || true)"
+            child_exe="${child_exe% (deleted)}"
+            child_realpath="$(readlink -f "$child_exe" 2>/dev/null || printf '%s' "$child_exe")"
+            if [[ -n "$child_realpath" && "$child_realpath" == "$APP_BIN_REALPATH" ]]; then
+                printf '%s\n' "$child_pid"
+                return 0
+            fi
+        done < <(pgrep -P "$parent_pid" 2>/dev/null || true)
+
+        app_is_running || break
+        sleep 1
+    done
+
+    # GitHub 기준 구현과 동일하게 Worker 탐색 실패 시 원래 PID를 관측 대상으로 사용한다.
+    printf '%s\n' "$parent_pid"
+    return 0
+}
+
+resolve_target_pid() {
+    TARGET_PID="$(find_target_pid "$APP_PID")" || return 1
+    if [[ "$TARGET_PID" == "$APP_PID" ]]; then
+        log "Worker 자식 프로세스를 찾지 못해 APP_PID를 관측 대상으로 사용합니다. PID=${APP_PID}"
+    else
+        log "PyInstaller Worker 확인: APP_PID=${APP_PID}, TARGET_PID=${TARGET_PID}"
+    fi
+    return 0
+}
+
 stop_app() {
     local signal_name="${1:-TERM}"
     local wait_seconds="${2:-5}"
     local i
 
-    if app_is_running; then
-        log "앱 PID ${APP_PID}에 SIG${signal_name} 전송"
-        kill -s "$signal_name" "$APP_PID" 2>/dev/null || true
+    # 먼저 실제 Worker에 종료 신호를 보낸다.
+    if [[ -n "$TARGET_PID" ]] && target_is_running; then
+        log "Worker PID ${TARGET_PID}에 SIG${signal_name} 전송"
+        kill -s "$signal_name" "$TARGET_PID" 2>/dev/null || true
+    fi
 
-        if [[ "$signal_name" == "TERM" ]]; then
-            for (( i = 0; i < wait_seconds * 5; i++ )); do
-                app_is_running || break
-                sleep 0.2
-            done
-            if app_is_running; then
-                log "정상 종료 대기 시간 초과. SIGKILL 전송"
-                kill -KILL "$APP_PID" 2>/dev/null || true
+    # 부모 프로세스에도 종료 신호를 보낸다.
+    if [[ -n "$APP_PID" ]] && app_is_running; then
+        log "부모 PID ${APP_PID}에 SIG${signal_name} 전송"
+        kill -s "$signal_name" "$APP_PID" 2>/dev/null || true
+    fi
+
+    if [[ "$signal_name" == "TERM" ]]; then
+        for (( i = 0; i < wait_seconds * 5; i++ )); do
+            if ! target_is_running && ! app_is_running; then
+                break
             fi
+            sleep 0.2
+        done
+
+        # 정상 종료되지 않은 프로세스만 최후에 SIGKILL한다.
+        if target_is_running; then
+            log "Worker 종료 대기 시간 초과. SIGKILL 전송"
+            kill -KILL "$TARGET_PID" 2>/dev/null || true
+        fi
+
+        if app_is_running; then
+            log "부모 프로세스 종료 대기 시간 초과. SIGKILL 전송"
+            kill -KILL "$APP_PID" 2>/dev/null || true
         fi
     fi
 
-    # 프로세스가 이미 종료된 경우에도 wait로 자식 프로세스를 회수하고 종료 코드를 기록합니다.
+    # wait는 현재 셸의 자식인 APP_PID에 대해서만 호출한다.
     if [[ -n "$APP_PID" ]]; then
         if wait "$APP_PID" 2>/dev/null; then
             APP_STATUS=0
@@ -303,14 +393,24 @@ AGENT_HOME="$AGENT_HOME" \
 AGENT_PORT="$AGENT_PORT" \
 AGENT_UPLOAD_DIR="$AGENT_UPLOAD_DIR" \
 AGENT_KEY_PATH="$AGENT_KEY_PATH" \
-AGENT_LOG_DIR="$AGENT_LOG_DIR" \
+AGENT_LOG_DIR="$RUN_AGENT_LOG_DIR" \
 MEMORY_LIMIT="$MEMORY_LIMIT" \
 CPU_MAX_OCCUPY="$CPU_MAX_OCCUPY" \
 MULTI_THREAD_ENABLE="$MULTI_THREAD_ENABLE" \
-    "$APP_BIN" >"$APP_LOG" 2>&1 &
+    "$APP_BIN" >"$APP_STDOUT_LOG" 2>&1 &
 APP_PID=$!
+
 printf '%s\n' "$APP_PID" > "$PID_FILE"
 
+if ! resolve_target_pid; then
+    stop_app TERM 5
+    RUN_RESULT="process_detection_failed"
+    write_summary
+    error "관측 대상 PID를 확인하지 못해 실험을 중단합니다."
+    exit 1
+fi
+
+printf '%s\n' "$TARGET_PID" > "${RUN_DIR}/target.pid"
 BOOT_OK=0
 BOOT_REASON=""
 BOOT_START=$SECONDS
@@ -324,11 +424,11 @@ while (( SECONDS - BOOT_START < BOOT_TIMEOUT )); do
         BOOT_REASON="max_runtime_during_boot"
         break
     fi
-    if grep -Eq '\[FAIL\]|System Boot Failed' "$APP_LOG"; then
+    if grep -Eq '\[FAIL\]|System Boot Failed' "$APP_STDOUT_LOG"; then
         BOOT_REASON="boot_failure_log"
         break
     fi
-    if grep -Fq 'All Boot Checks Passed!' "$APP_LOG"; then
+    if grep -Fq 'All Boot Checks Passed!' "$APP_STDOUT_LOG"; then
         BOOT_OK=1
         BOOT_REASON="boot_success"
         break
@@ -349,25 +449,27 @@ if (( BOOT_OK == 0 )); then
     write_summary
     error "부팅 검사 실패: ${BOOT_REASON}"
     echo "----- 부팅 로그 마지막 30줄 -----"
-    tail -n 30 "$APP_LOG" 2>/dev/null || true
+    tail -n 30 "$APP_STDOUT_LOG" 2>/dev/null || true
     echo "--------------------------------"
     log "부팅 실패 증거를 보존했습니다: ${RUN_DIR}"
     exit 1
 fi
 
-log "부팅 검사 통과! 앱 PID=${APP_PID}"
-log "앱 로그: ${APP_LOG}"
+log "부팅 검사 통과! APP_PID=${APP_PID}, TARGET_PID=${TARGET_PID}"
+log "앱 내부 로그: ${APP_LOG}"
+log "앱 stdout/stderr: ${APP_STDOUT_LOG}"
 
 # 5. 프로세스 및 관제 데이터 수집
 START_SECONDS=$SECONDS
 
 capture_process_state() {
-    local -a process_pids=("$APP_PID")
-    local parent child process_pid_list
+    local -a process_pids=("$APP_PID" "$TARGET_PID")
+    local current_child process_pid_list
 
     collect_descendants() {
         local current_parent="$1"
         local current_child
+
         while read -r current_child; do
             [[ -n "$current_child" ]] || continue
             process_pids+=("$current_child")
@@ -376,7 +478,7 @@ capture_process_state() {
     }
 
     collect_descendants "$APP_PID"
-    process_pid_list="$(IFS=,; echo "${process_pids[*]}")"
+    process_pid_list="$(printf '%s\n' "${process_pids[@]}" | sort -un | paste -sd, -)"
 
     {
         echo "===== $(date '+%Y-%m-%d %H:%M:%S') PROCESS SNAPSHOT ====="
@@ -391,7 +493,8 @@ capture_process_state() {
 }
 
 while (( STOP_COLLECTION == 0 )); do
-    if ! app_is_running; then
+    if ! target_is_running; then
+        log "실제 Worker가 종료되었습니다. TARGET_PID=${TARGET_PID}"
         break
     fi
 
@@ -406,17 +509,17 @@ while (( STOP_COLLECTION == 0 )); do
 
     case "$CASE_NAME" in
         oom)
-            run_collector oom "$OOM_TEST" "$APP_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
+            run_collector oom bash "$OOM_TEST" "$TARGET_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
             ;;
         cpu)
-            run_collector cpu "$CPU_SPIKE" "$APP_PID" "$APP_LOG" "$CPU_LOG" || true
+            run_collector cpu bash "$CPU_SPIKE" "$TARGET_PID" "$APP_LOG" "$CPU_LOG" || true
             ;;
         deadlock)
-            run_collector deadlock "$DEADLOCK_TEST" "$APP_PID" "$APP_LOG" "$DEADLOCK_LOG" || true
+            run_collector deadlock bash "$DEADLOCK_TEST" "$TARGET_PID" "$APP_LOG" "$DEADLOCK_LOG" || true
             ;;
     esac
 
-    APP_PID="$APP_PID" AGENT_LOG_DIR="$AGENT_LOG_DIR" \
+    APP_PID="$TARGET_PID" APP_NAME="$(basename "$APP_BIN" | cut -c1-15)" AGENT_LOG_DIR="$RUN_AGENT_LOG_DIR" \
         run_collector monitor "$MONITOR" >> "$MONITOR_LOG" 2>&1 || true
 
     # 관측 시간이 설정된 경우 수집 주기 종료 후 조건을 확인합니다.
@@ -428,32 +531,45 @@ done
 
 # OOM은 프로세스 종료 직전/직후 마지막 스냅샷을 한 번 더 남깁니다.
 if [[ "$CASE_NAME" == "oom" ]]; then
-    run_collector oom-final "$OOM_TEST" "$APP_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
+    run_collector oom-final bash "$OOM_TEST" "$TARGET_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
 fi
 
 # 6. 실행 종료 상태 처리
 if (( TIME_LIMIT_REACHED )); then
     stop_app TERM 5
     RUN_RESULT="max_runtime_reached"
-elif app_is_running; then
+elif target_is_running; then
     # 관측 시간 도달 또는 사용자의 Ctrl-C는 기존 동작처럼 수집만 중단합니다.
     APP_STATUS="still_running"
     RUN_RESULT="collection_stopped_app_running"
     log "증거 수집을 중단했습니다. 앱은 계속 실행 중입니다(PID=${APP_PID})."
     log "수동 종료 명령: kill ${APP_PID}"
 else
-    if wait "$APP_PID" 2>/dev/null; then
-        APP_STATUS=0
-    else
-        APP_STATUS=$?
+    # Worker만 먼저 종료되고 PyInstaller 부모가 남는 경우를 정리한다.
+    # wait는 셸의 자식인 APP_PID에만 수행하며, 부모가 살아 있으면 TERM 후 제한 시간 내 회수한다.
+    if app_is_running; then
+        log "관측 대상은 종료됐지만 부모 프로세스가 남아 있어 정리합니다. APP_PID=${APP_PID}"
+        stop_app TERM 5
+    elif [[ -n "$APP_PID" ]]; then
+        if wait "$APP_PID" 2>/dev/null; then
+            APP_STATUS=0
+        else
+            APP_STATUS=$?
+        fi
     fi
     RUN_RESULT="application_exited"
     log "앱이 종료되었습니다. 종료 코드=${APP_STATUS}"
 fi
 
-# 앱 종료/수집 종료 시점의 최종 monitor 결과를 보존합니다.
-APP_PID="$APP_PID" AGENT_LOG_DIR="$AGENT_LOG_DIR" \
-    run_collector monitor-final "$MONITOR" >> "$MONITOR_LOG" 2>&1 || true
+# 앱이 살아 있는 경우에만 최종 monitor를 실행한다. 종료된 PID로 monitor를 호출하면
+# 정상적인 종료 상황도 collector 오류로 기록되므로, 종료 후에는 생략 사유만 남긴다.
+if target_is_running; then
+    APP_PID="$TARGET_PID" APP_NAME="$(basename "$APP_BIN" | cut -c1-15)" AGENT_LOG_DIR="$RUN_AGENT_LOG_DIR" \
+        run_collector monitor-final "$MONITOR" >> "$MONITOR_LOG" 2>&1 || true
+else
+    printf '[%s] monitor-final skipped: target process already exited (PID=%s)\n' \
+        "$(date '+%Y-%m-%d %H:%M:%S')" "$TARGET_PID" >> "$MONITOR_LOG"
+fi
 
 write_summary
 

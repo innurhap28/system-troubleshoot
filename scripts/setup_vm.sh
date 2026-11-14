@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # OrbStack에 Ubuntu 과제용 VM을 만들고 앱, 환경, 관제 도구를 한 번에 준비합니다.
-VM_NAME="${VM_NAME:-system-troubleshooting}"
+VM_NAME="${VM_NAME:-sys-trouble}"
 VM_USER="${VM_USER:-${USER}}"
 VM_ARCH="${VM_ARCH:-amd64}"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -20,7 +20,7 @@ OrbStack이 설치되어 있어야 합니다. 스크립트가 Ubuntu 24.04 amd64
 ./scripts/setup_vm.sh
 ```
 
-기본 VM 이름은 `system-troubleshooting`이고, Linux 사용자는 호스트 사용자 이름과 같습니다. 새 VM의 이름, 사용자, 아키텍처는 `VM_NAME`, `VM_USER`, `VM_ARCH`로 지정할 수 있습니다.
+기본 VM 이름은 `sys-trouble`이고, Linux 사용자는 호스트 사용자 이름과 같습니다. 새 VM의 이름, 사용자, 아키텍처는 `VM_NAME`, `VM_USER`, `VM_ARCH`로 지정할 수 있습니다.
 
 ```bash
 VM_NAME=troubleshooting-lab VM_USER=student ./scripts/setup_vm.sh
@@ -29,7 +29,7 @@ VM_NAME=troubleshooting-lab VM_USER=student ./scripts/setup_vm.sh
 설정이 끝나면 다음과 같이 VM에 접속합니다.
 
 ```bash
-orb -m system-troubleshooting
+orb -m sys-trouble
 ```
 
 ## 2. 장애 재현 및 증거 수집
