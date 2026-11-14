@@ -409,7 +409,7 @@ while (( STOP_COLLECTION == 0 )); do
             run_collector oom "$OOM_TEST" "$APP_PID" "$MEMORY_LIMIT" "$APP_LOG" "$OOM_LOG" || true
             ;;
         cpu)
-            run_collector cpu "$CPU_SPIKE" "$APP_PID" "$CPU_LOG" || true
+            run_collector cpu "$CPU_SPIKE" "$APP_PID" "$APP_LOG" "$CPU_LOG" || true
             ;;
         deadlock)
             run_collector deadlock "$DEADLOCK_TEST" "$APP_PID" "$APP_LOG" "$DEADLOCK_LOG" || true
