@@ -1,0 +1,9 @@
+timestamp,pid,cpu_max_occupy,process_status,app_current_load,process_cpu_pct,elapsed_seconds,ps_cpu_avg_pct,ps_rss_kb,process_state,loadavg_1m,loadavg_5m,loadavg_15m,watchdog_detected
+2026-11-15 10:46:57,28054,80,RUNNING,5.00,0.99,1.01,1.8,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:02,28054,80,RUNNING,13.07,0.00,1.01,0.7,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:06,28054,80,RUNNING,21.77,0.00,1.01,0.7,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:11,28054,80,RUNNING,27.44,0.00,1.01,0.8,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:15,28054,80,RUNNING,35.61,0.00,1.01,0.7,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:20,28054,80,RUNNING,41.09,3.97,1.01,0.9,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:24,28054,80,RUNNING,43.27,0.00,1.01,0.9,18580,SN+,0.00,0.00,0.00,false
+2026-11-15 10:47:29,28054,80,EXITED_DURING_SAMPLE,50.64,,,,,,0.00,0.00,0.00,true

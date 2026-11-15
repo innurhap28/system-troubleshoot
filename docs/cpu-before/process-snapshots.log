@@ -1,0 +1,112 @@
+===== 2026-11-15 10:46:57 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    4.8  0.0  2200   2908       00:01 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   3.0  0.1 18516  28688       00:00 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   3.0 agent-leak-app-
+top - 10:46:57 up  4:34,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15500.9 free,    656.4 used,    133.4 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15390.9 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18516   9948 S   0.0   0.1   0:00.03 agent-l+
+===== 2026-11-15 10:47:02 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.9  0.0  2200   2908       00:05 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   0.9  0.1 18580  28688       00:05 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   0.9 agent-leak-app-
+top - 10:47:02 up  4:34,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15491.9 free,    665.1 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15382.2 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.05 agent-l+
+===== 2026-11-15 10:47:06 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.5  0.0  2200   2908       00:09 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   0.8  0.1 18580  28688       00:09 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   0.8 agent-leak-app-
+top - 10:47:06 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15481.0 free,    676.0 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15371.3 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.08 agent-l+
+===== 2026-11-15 10:47:10 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.3  0.0  2200   2908       00:14 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   0.6  0.1 18580  28688       00:14 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   0.6 agent-leak-app-
+top - 10:47:11 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15490.7 free,    666.3 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15381.0 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S  30.0   0.1   0:00.13 agent-l+
+===== 2026-11-15 10:47:15 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.2  0.0  2200   2908       00:18 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   0.8  0.1 18580  28688       00:18 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   0.8 agent-leak-app-
+top - 10:47:15 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15481.5 free,    675.5 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15371.8 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.16 agent-l+
+===== 2026-11-15 10:47:19 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.2  0.0  2200   2908       00:23 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   0.8  0.1 18580  28688       00:23 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   0.8 agent-leak-app-
+top - 10:47:20 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15490.6 free,    664.4 used,    137.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15382.9 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.20 agent-l+
+===== 2026-11-15 10:47:24 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.1  0.0  2200   2908       00:27 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   1.0  0.1 18580  28688       00:27 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   1.0 agent-leak-app-
+top - 10:47:24 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15495.6 free,    667.9 used,    120.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15379.4 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.29 agent-l+
+===== 2026-11-15 10:47:28 =====
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  28046   28034 S+    0.1  0.0  2200   2908       00:32 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+  28054   28046 SN+   1.0  0.1 18580  28688       00:32 agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+    PID     TID STAT %CPU COMMAND
+  28054   28054 SN+   1.0 agent-leak-app-
+top - 10:47:29 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15499.0 free,    664.3 used,    121.4 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15383.0 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.33 agent-l+

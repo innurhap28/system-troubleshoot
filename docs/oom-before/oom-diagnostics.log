@@ -1,0 +1,525 @@
+
+========== OOM SNAPSHOT 2026-11-15 10:13:36 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   3.4  0.1 18504  28688       00:01 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=28688 VmSize_kB=28688 VmRSS_kB=18504 VmHWM_kB=18504
+PROCESS_RSS_MB=18.07
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=7.1%
+----- Detailed memory from smaps_rollup -----
+Rss:               18504 kB
+Pss:               16630 kB
+Pss_Anon:           8536 kB
+Pss_File:            926 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:     15704 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       655Mi        15Gi        26Mi       148Mi        15Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15866064 kB
+MemAvailable:   15761276 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 18504  0.1 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3042  4300  0.0 bash
+   3064  4172  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:40 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.5  0.2 44108  54292       00:04 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=54292 VmSize_kB=54292 VmRSS_kB=44108 VmHWM_kB=44108
+PROCESS_RSS_MB=43.07
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=16.8%
+----- Detailed memory from smaps_rollup -----
+Rss:               44108 kB
+Pss:               42223 kB
+Pss_Anon:          34140 kB
+Pss_File:            915 kB
+Shared_Clean:       2352 kB
+Shared_Dirty:          0 kB
+Private_Clean:       448 kB
+Private_Dirty:     41308 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       690Mi        15Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15829592 kB
+MemAvailable:   15724972 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 44108  0.2 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3093  4260  0.0 bash
+   3115  4148  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:43 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.1  0.4 69712  79896       00:07 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=79896 VmSize_kB=79896 VmRSS_kB=69712 VmHWM_kB=69712
+PROCESS_RSS_MB=68.08
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=26.6%
+----- Detailed memory from smaps_rollup -----
+Rss:               69712 kB
+Pss:               67839 kB
+Pss_Anon:          59744 kB
+Pss_File:            927 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:     66912 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       726Mi        15Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15793208 kB
+MemAvailable:   15688588 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 69712  0.4 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3146  4264  0.0 bash
+   3168  4144  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:46 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.0  0.5 95316 105500       00:10 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=105500 VmSize_kB=105500 VmRSS_kB=95316 VmHWM_kB=95316
+PROCESS_RSS_MB=93.08
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=36.4%
+----- Detailed memory from smaps_rollup -----
+Rss:               95316 kB
+Pss:               93439 kB
+Pss_Anon:          85348 kB
+Pss_File:            923 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:     92516 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       741Mi        15Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15777304 kB
+MemAvailable:   15672668 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 95316  0.5 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3199  4268  0.0 bash
+   3221  4120  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:50 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 RN+   1.1  0.8 137036 156708      00:14 -                        agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=R VmPeak_kB=156708 VmSize_kB=156708 VmRSS_kB=138188 VmHWM_kB=138188
+PROCESS_RSS_MB=134.95
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=52.7%
+----- Detailed memory from smaps_rollup -----
+Rss:              139244 kB
+Pss:              137370 kB
+Pss_Anon:         129276 kB
+Pss_File:            926 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:    136444 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       793Mi        14Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15723196 kB
+MemAvailable:   15618564 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 143596  0.8 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3252  4184  0.0 bash
+   3274  4156  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:53 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.1  1.0 172128 182312      00:17 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=182312 VmSize_kB=182312 VmRSS_kB=172128 VmHWM_kB=172128
+PROCESS_RSS_MB=168.09
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=65.7%
+----- Detailed memory from smaps_rollup -----
+Rss:              172128 kB
+Pss:              170256 kB
+Pss_Anon:         162160 kB
+Pss_File:            928 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:    169328 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       829Mi        14Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15687356 kB
+MemAvailable:   15582724 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 172128  1.0 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3305  4212  0.0 bash
+   3327  4128  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-11-15 10:13:50,094 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-11-15 10:13:53,141 [INFO] [MemoryWorker] Current Heap: 150MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:56 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.1  1.2 197732 207916      00:20 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=207916 VmSize_kB=207916 VmRSS_kB=197732 VmHWM_kB=197732
+PROCESS_RSS_MB=193.10
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=75.4%
+----- Detailed memory from smaps_rollup -----
+Rss:              197732 kB
+Pss:              195858 kB
+Pss_Anon:         187764 kB
+Pss_File:            926 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:    194932 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       843Mi        14Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15673480 kB
+MemAvailable:   15568904 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 197732  1.2 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3358  4212  0.0 bash
+   3380  4148  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-11-15 10:13:50,094 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-11-15 10:13:53,141 [INFO] [MemoryWorker] Current Heap: 150MB
+2026-11-15 10:13:56,186 [INFO] [MemoryWorker] Current Heap: 175MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:13:59 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.0  1.3 223336 233520      00:24 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=233520 VmSize_kB=233520 VmRSS_kB=223336 VmHWM_kB=223336
+PROCESS_RSS_MB=218.10
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=85.2%
+----- Detailed memory from smaps_rollup -----
+Rss:              223336 kB
+Pss:              221461 kB
+Pss_Anon:         213368 kB
+Pss_File:            925 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:    220536 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       876Mi        14Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15638972 kB
+MemAvailable:   15534396 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 223336  1.3 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3411  4300  0.0 bash
+   3433  4140  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-11-15 10:13:50,094 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-11-15 10:13:53,141 [INFO] [MemoryWorker] Current Heap: 150MB
+2026-11-15 10:13:56,186 [INFO] [MemoryWorker] Current Heap: 175MB
+2026-11-15 10:13:59,231 [INFO] [MemoryWorker] Current Heap: 200MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:14:03 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.0  1.5 248940 259124      00:27 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=259124 VmSize_kB=259124 VmRSS_kB=248940 VmHWM_kB=248940
+PROCESS_RSS_MB=243.11
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=95.0%
+----- Detailed memory from smaps_rollup -----
+Rss:              248940 kB
+Pss:              247065 kB
+Pss_Anon:         238972 kB
+Pss_File:            925 kB
+Shared_Clean:       2340 kB
+Shared_Dirty:          0 kB
+Private_Clean:       460 kB
+Private_Dirty:    246140 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       907Mi        14Gi        26Mi       148Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15607232 kB
+MemAvailable:   15502664 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 248940  1.5 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3464  4300  0.0 bash
+   3486  4168  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:35,879 [INFO] Agent listening at port 15034
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-11-15 10:13:50,094 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-11-15 10:13:53,141 [INFO] [MemoryWorker] Current Heap: 150MB
+2026-11-15 10:13:56,186 [INFO] [MemoryWorker] Current Heap: 175MB
+2026-11-15 10:13:59,231 [INFO] [MemoryWorker] Current Heap: 200MB
+2026-11-15 10:14:02,278 [INFO] [MemoryWorker] Current Heap: 225MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:14:06 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is present
+----- Process information (ps) -----
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED WCHAN                    COMMAND         COMMAND
+   3026    3018 SN+   1.0  1.6 274544 284728      00:30 do_select                agent-leak-app- /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+----- Process memory from /proc/3026/status -----
+NAME=agent-leak-app- STATE=S VmPeak_kB=284728 VmSize_kB=284728 VmRSS_kB=274544 VmHWM_kB=274544
+PROCESS_RSS_MB=268.11
+RSS_VS_CONFIGURED_LIMIT_ESTIMATE=104.7%
+----- Detailed memory from smaps_rollup -----
+Rss:              274544 kB
+Pss:              272663 kB
+Pss_Anon:         264576 kB
+Pss_File:            919 kB
+Shared_Clean:       2344 kB
+Shared_Dirty:          0 kB
+Private_Clean:       456 kB
+Private_Dirty:    271744 kB
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       936Mi        14Gi        26Mi       149Mi        14Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15577740 kB
+MemAvailable:   15473260 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+   3026 274544  1.6 agent-leak-app-
+     28 16760  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3517  4240  0.0 bash
+   3539  4156  0.0 ps
+----- MemoryGuard / termination log evidence -----
+----- Last application log lines -----
+2026-11-15 10:13:37,917 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-11-15 10:13:40,961 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-11-15 10:13:44,005 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-11-15 10:13:50,094 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-11-15 10:13:53,141 [INFO] [MemoryWorker] Current Heap: 150MB
+2026-11-15 10:13:56,186 [INFO] [MemoryWorker] Current Heap: 175MB
+2026-11-15 10:13:59,231 [INFO] [MemoryWorker] Current Heap: 200MB
+2026-11-15 10:14:02,278 [INFO] [MemoryWorker] Current Heap: 225MB
+2026-11-15 10:14:05,322 [INFO] [MemoryWorker] Current Heap: 250MB
+========== END OOM SNAPSHOT ==========
+
+========== OOM SNAPSHOT 2026-11-15 10:14:09 ==========
+CONFIGURED_MEMORY_LIMIT_MB=256
+PROCESS_STATUS: PID 3026 is not present in /proc
+----- System memory (free -h) -----
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       665Mi        15Gi        12Mi       135Mi        15Gi
+Swap:           16Gi          0B        16Gi
+----- System memory (/proc/meminfo) -----
+MemTotal:       16432436 kB
+MemFree:        15855676 kB
+MemAvailable:   15751228 kB
+SwapTotal:      17481004 kB
+SwapFree:       17481004 kB
+----- Top RSS processes -----
+    PID   RSS %MEM COMMAND
+     28 16776  0.1 orbstack-agent:
+    232  5840  0.0 systemd-logind
+      1  5772  0.0 systemd
+   2998  4436  0.0 bash
+   3006  4236  0.0 bash
+   3577  4156  0.0 ps
+   3566  3732  0.0 bash
+----- MemoryGuard / termination log evidence -----
+2026-11-15 10:14:08,366 [CRITICAL] [MemoryGuard] Memory limit exceeded (275MB >= 256MB) / (Recommend Over 256MB)
+2026-11-15 10:14:08,367 [CRITICAL] [MemoryGuard] Self-terminating process 3026 to prevent system instability.
+----- Last application log lines -----
+2026-11-15 10:13:47,048 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-11-15 10:13:50,094 [INFO] [MemoryWorker] Current Heap: 125MB
+2026-11-15 10:13:53,141 [INFO] [MemoryWorker] Current Heap: 150MB
+2026-11-15 10:13:56,186 [INFO] [MemoryWorker] Current Heap: 175MB
+2026-11-15 10:13:59,231 [INFO] [MemoryWorker] Current Heap: 200MB
+2026-11-15 10:14:02,278 [INFO] [MemoryWorker] Current Heap: 225MB
+2026-11-15 10:14:05,322 [INFO] [MemoryWorker] Current Heap: 250MB
+2026-11-15 10:14:08,366 [INFO] [MemoryWorker] Current Heap: 275MB
+2026-11-15 10:14:08,366 [CRITICAL] [MemoryGuard] Memory limit exceeded (275MB >= 256MB) / (Recommend Over 256MB)
+2026-11-15 10:14:08,367 [CRITICAL] [MemoryGuard] Self-terminating process 3026 to prevent system instability.
+========== END OOM SNAPSHOT ==========

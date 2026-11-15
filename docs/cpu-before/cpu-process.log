@@ -1,0 +1,284 @@
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:46:57 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=0.99% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=1.8% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=5.00 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  1.8 18580  28688 SN+   10       00:02 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28107
+--- Host top snapshot ---
+top - 10:46:58 up  4:34,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.6 us,  0.0 sy,  0.0 ni, 99.4 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15495.5 free,    661.6 used,    133.6 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15385.7 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.04 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:02 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=0.00% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=0.7% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=13.07 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  0.7 18580  28688 SN+   10       00:06 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28171
+--- Host top snapshot ---
+top - 10:47:03 up  4:34,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15486.0 free,    671.0 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15376.3 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.05 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:06 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=0.00% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=0.7% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=21.77 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  0.7 18580  28688 SN+   10       00:11 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28237
+--- Host top snapshot ---
+top - 10:47:07 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15493.4 free,    663.6 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15383.7 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.08 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+2026-11-15 10:47:04,863 [INFO] [CpuWorker] Current Load: 21.77%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:11 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=0.00% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=0.8% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=27.44 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  0.8 18580  28688 SN+   10       00:15 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28303
+--- Host top snapshot ---
+top - 10:47:12 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15485.1 free,    671.9 used,    133.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15375.4 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.13 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+2026-11-15 10:47:04,863 [INFO] [CpuWorker] Current Load: 21.77%
+2026-11-15 10:47:07,982 [INFO] [CpuWorker] Current Load: 22.33%
+2026-11-15 10:47:11,102 [INFO] [CpuWorker] Current Load: 27.44%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:15 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=0.00% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=0.7% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=35.61 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  0.7 18580  28688 SN+   10       00:20 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28369
+--- Host top snapshot ---
+top - 10:47:16 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15493.4 free,    661.6 used,    137.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15385.7 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.16 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+2026-11-15 10:47:04,863 [INFO] [CpuWorker] Current Load: 21.77%
+2026-11-15 10:47:07,982 [INFO] [CpuWorker] Current Load: 22.33%
+2026-11-15 10:47:11,102 [INFO] [CpuWorker] Current Load: 27.44%
+2026-11-15 10:47:14,224 [INFO] [CpuWorker] Current Load: 35.61%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:20 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=3.97% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=0.9% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=41.09 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  0.9 18580  28688 SN+   10       00:24 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28435
+--- Host top snapshot ---
+top - 10:47:21 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15485.6 free,    669.3 used,    137.9 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15378.0 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.24 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+2026-11-15 10:47:04,863 [INFO] [CpuWorker] Current Load: 21.77%
+2026-11-15 10:47:07,982 [INFO] [CpuWorker] Current Load: 22.33%
+2026-11-15 10:47:11,102 [INFO] [CpuWorker] Current Load: 27.44%
+2026-11-15 10:47:14,224 [INFO] [CpuWorker] Current Load: 35.61%
+2026-11-15 10:47:17,344 [INFO] [CpuWorker] Current Load: 36.67%
+2026-11-15 10:47:20,466 [INFO] [CpuWorker] Current Load: 41.09%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:24 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=RUNNING
+PROCESS_CPU=0.00% SAMPLE_ELAPSED=1.01s
+PS_CPU_AVG=0.9% PS_RSS=18580KB PROCESS_STATE=SN+
+APP_CURRENT_LOAD=43.27 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=false
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+  28054   28046  0.9 18580  28688 SN+   10       00:29 /home/innuendo3712/agent-app/bin/agent-leak-app-x86
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/366 28501
+--- Host top snapshot ---
+top - 10:47:25 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15491.4 free,    672.0 used,    121.0 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15375.3 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  28054 innuend+  30  10   28688  18580   9948 S   0.0   0.1   0:00.29 agent-l+
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+2026-11-15 10:47:04,863 [INFO] [CpuWorker] Current Load: 21.77%
+2026-11-15 10:47:07,982 [INFO] [CpuWorker] Current Load: 22.33%
+2026-11-15 10:47:11,102 [INFO] [CpuWorker] Current Load: 27.44%
+2026-11-15 10:47:14,224 [INFO] [CpuWorker] Current Load: 35.61%
+2026-11-15 10:47:17,344 [INFO] [CpuWorker] Current Load: 36.67%
+2026-11-15 10:47:20,466 [INFO] [CpuWorker] Current Load: 41.09%
+2026-11-15 10:47:23,585 [INFO] [CpuWorker] Current Load: 43.27%
+--- Watchdog / termination evidence ---
+No Watchdog/termination line found in the application log at this sample.
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
+
+========== CPU SPIKE SNAPSHOT 2026-11-15 10:47:29 ==========
+EXPERIMENT_CPU_MAX_OCCUPY=80%
+PID=28054 PROCESS_STATUS=EXITED_DURING_SAMPLE
+PROCESS_CPU=UNAVAILABLE
+PS_CPU_AVG=UNAVAILABLE% PS_RSS=UNAVAILABLEKB PROCESS_STATE=UNAVAILABLE
+APP_CURRENT_LOAD=50.64 (application-internal metric; not OS CPU%)
+HOST_LOAD_AVERAGE_1M_5M_15M=0.00,0.00,0.00
+WATCHDOG_EVIDENCE_DETECTED=true
+--- Process snapshot (ps) ---
+    PID    PPID %CPU   RSS    VSZ STAT  NI     ELAPSED CMD
+--- Host load average (/proc/loadavg) ---
+0.00 0.00 0.00 1/364 28562
+--- Host top snapshot ---
+top - 10:47:30 up  4:35,  0 user,  load average: 0.00, 0.00, 0.00
+Tasks:   0 total,   0 running,   0 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  16047.3 total,  15496.6 free,    659.1 used,    122.8 buff/cache     
+MiB Swap:  17071.3 total,  17071.3 free,      0.0 used.  15388.2 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+--- Application CPU / cooldown evidence ---
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Started. Maximum CPU Limit: 80%
+2026-11-15 10:46:58,623 [INFO] [CpuWorker] Current Load: 5.00%
+2026-11-15 10:47:01,745 [INFO] [CpuWorker] Current Load: 13.07%
+2026-11-15 10:47:04,863 [INFO] [CpuWorker] Current Load: 21.77%
+2026-11-15 10:47:07,982 [INFO] [CpuWorker] Current Load: 22.33%
+2026-11-15 10:47:11,102 [INFO] [CpuWorker] Current Load: 27.44%
+2026-11-15 10:47:14,224 [INFO] [CpuWorker] Current Load: 35.61%
+2026-11-15 10:47:17,344 [INFO] [CpuWorker] Current Load: 36.67%
+2026-11-15 10:47:20,466 [INFO] [CpuWorker] Current Load: 41.09%
+2026-11-15 10:47:23,585 [INFO] [CpuWorker] Current Load: 43.27%
+2026-11-15 10:47:26,706 [INFO] [CpuWorker] Current Load: 45.04%
+2026-11-15 10:47:29,827 [INFO] [CpuWorker] Current Load: 50.64%
+2026-11-15 10:47:29,929 [CRITICAL] [CpuWorker] CPU Threshold Violated! (50.64000000000001%).
+--- Watchdog / termination evidence ---
+2026-11-15 10:47:29,929 [CRITICAL] [CpuWorker] CPU Threshold Violated! (50.64000000000001%).
+--- Cooldown / recovery evidence ---
+No explicit cooldown/recovery line found; compare successive APP_CURRENT_LOAD and PROCESS_CPU samples.
+========== END CPU SPIKE SNAPSHOT ==========
