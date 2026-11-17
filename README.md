@@ -1,60 +1,109 @@
 # 리눅스 프로세스 및 시스템 리소스 트러블슈팅
 
-`agent-leak-app-x86`를 Linux 가상머신에서 실행해 OOM, CPU 과점유, Deadlock 증거를 수집하고 결과를 이슈 형식의 보고서로 정리하는 과제입니다. 세 장애를 반복 재현할 수 있도록 이전 시스템 자동화 과제의 VM 준비, 앱 설정, 관제 흐름을 이번 과제에 맞게 연결했습니다.
+## 1. 구성
 
-## 자동화 스크립트
+- `run_case.sh`: 앱 실행, 부팅 확인, 프로세스 탐색, 증거 수집 및 종료 관리
+- `oom_test.sh`: `/proc` 기반 RSS/VmSize/PSS/Private_Dirty 수집
+- `cpu_spike.sh`: 앱 내부 Current Load, 프로세스 CPU, 시스템 load average 수집
+- `deadlock_test.sh`: 프로세스/스레드 상태, CPU tick, 로그 정체 시간 수집
 
-| 파일 | 역할 |
-|---|---|
-| `scripts/setup_vm.sh` | OrbStack Ubuntu 24.04 VM 생성 또는 재사용, Linux 도구 설치, 디렉터리/API 키 준비, 앱과 과제 스크립트 복사 |
-| `scripts/run_case.sh` | OOM·CPU·Deadlock 설정별 앱 실행, 앱 로그와 PID·프로세스·스레드·관제 증거 수집 |
-| `monitor.sh` | 앱의 PID·CPU·RSS 메모리·생존 시간·15034 포트 상태를 한 번 기록하고 로그 순환 보관 |
+기존 배포된 `$AGENT_HOME/bin/monitor.sh`를 함께 호출한다. 앱 로그(`agent_app.log`)와 앱 stdout/stderr는 서로 다른 파일로 보존한다.
 
-이전 과제의 SSH 포트 변경, 방화벽, 사용자·그룹·ACL 설정은 이번 장애 분석과 관계가 없어 가져오지 않았습니다. VM 초기화나 네트워크 보안 설정으로 장애 재현 조건이 바뀌는 것도 피합니다.
+## 2. 설치 위치
 
-## 1. 가상머신 준비
+네 파일을 같은 디렉터리에 둔다. `run_case.sh`는 진단 스크립트를 `$AGENT_HOME/bin/`에서 먼저 찾고, 없으면 자기 파일과 같은 디렉터리에서 찾는다.
 
-OrbStack이 설치되어 있어야 합니다. 스크립트가 Ubuntu 24.04 amd64 VM을 만들거나 같은 이름의 기존 VM을 재사용합니다. 제공 바이너리가 x86용이므로 기본 아키텍처는 `amd64`입니다.
+앱 바이너리는 GitHub 기준 경로인 `$AGENT_HOME/agent-leak-app`을 우선 사용한다. 기존 배포본 `$AGENT_HOME/bin/agent-leak-app` 또는 `$AGENT_HOME/bin/agent-leak-app-x86`도 지원한다.
 
-```bash
-./scripts/setup_vm.sh
-```
+## 3. 실행
 
-기본 VM 이름은 `sys-trouble`이고, Linux 사용자는 호스트 사용자 이름과 같습니다. 새 VM의 이름, 사용자, 아키텍처는 `VM_NAME`, `VM_USER`, `VM_ARCH`로 지정할 수 있습니다.
+`agent-admin` 일반 사용자로 실행한다. root 실행은 미션 조건에 따라 거부한다.
 
 ```bash
-VM_NAME=sys-trouble VM_USER=student ./scripts/setup_vm.sh
+cd /system-troubleshoot
+
+bash run_case.sh oom baseline
+bash run_case.sh oom adjusted
+
+bash run_case.sh cpu baseline
+bash run_case.sh cpu adjusted
+
+bash run_case.sh deadlock baseline
+bash run_case.sh deadlock adjusted
 ```
 
-설정이 끝나면 다음과 같이 VM에 접속합니다.
+환경변수는 GitHub 기준 저장소처럼 로그인 셸의 환경변수를 사용한다. `AGENT_HOME`, `AGENT_PORT`, `AGENT_UPLOAD_DIR`, `AGENT_KEY_PATH`, `AGENT_LOG_DIR`가 이미 설정돼 있으면 그 값을 사용한다. `$HOME/agent-app/env.sh`가 있으면 먼저 읽는다. 미설정 시 기준 저장소 기본 경로를 사용한다.
 
-```bash
-orb -m sys-trouble
-```
+## 4. 실험 설정
 
-## 2. 장애 재현 및 증거 수집
-
-VM 안에서 실행 환경을 읽고, 아래 명령으로 유형과 비교 설정을 선택합니다.
-
-```bash
-source ~/agent-app/env.sh
-~/agent-app/bin/run_case.sh oom baseline
-```
-
-| 장애 유형 | 기준 설정 `baseline` | 조정 설정 `adjusted` |
+| 케이스 | baseline | adjusted |
 |---|---|---|
-| `oom` | `MEMORY_LIMIT=356` MB | `MEMORY_LIMIT=512` MB |
-| `cpu` | `CPU_MAX_OCCUPY=80`% | `CPU_MAX_OCCUPY=10`% |
-| `deadlock` | `MULTI_THREAD_ENABLE=true` | `MULTI_THREAD_ENABLE=false` |
+| OOM | `MEMORY_LIMIT=256` | `MEMORY_LIMIT=512` |
+| CPU | `CPU_MAX_OCCUPY=80` | `CPU_MAX_OCCUPY=10` |
+| Deadlock | `MULTI_THREAD_ENABLE=true` | `MULTI_THREAD_ENABLE=false` |
 
-예를 들어 CPU 조정 결과는 `~/agent-app/bin/run_case.sh cpu adjusted`로 실행합니다. OOM·CPU 비교는 교착상태가 섞이지 않도록 멀티스레드를 끄며, 교착상태는 별도 케이스에서만 비교합니다. 앱은 root가 아닌 VM 사용자로 실행됩니다. 교착상태처럼 앱이 종료되지 않으면 `Ctrl-C` 또는 `OBSERVE_SECONDS=30`으로 관제 수집만 멈출 수 있으며, 실행 중인 앱은 남겨 두어 PID와 스레드 상태를 추가로 확인할 수 있습니다. 종료할 때 출력된 `kill <PID>` 명령을 사용합니다.
+다른 변수는 케이스 간 간섭을 줄이도록 고정한다.
 
-각 실행 자료는 `~/agent-app/evidence/<장애유형>/<실행시각>_<비교설정>/`에 저장됩니다.
+- OOM: CPU=10
+- CPU: MEMORY_LIMIT=512, MULTI_THREAD_ENABLE=false
+- Deadlock: MEMORY_LIMIT=512, CPU=10
 
-- `application.log`: 앱 출력과 MemoryGuard·Watchdog·대기 로그
-- `process-snapshots.log`: 주기별 PID, CPU, 메모리, 스레드 상태와 `top -H` 출력
-- `monitor-snapshots.log`: 해당 실행의 `monitor.sh` 출력
-- `app.pid`: 실행한 앱의 PID
-- `~/agent-app/logs/monitor.log`: 누적 관제 기록
+## 5. 실행 시간 조정
 
-`monitor.sh`를 별도로 한 번 실행하려면 VM 안에서 `source ~/agent-app/env.sh` 후 `~/agent-app/bin/monitor.sh`를 실행합니다. 기본 설정은 10 MiB 단위로 로그를 회전하며 최근 10개 파일을 보관합니다.
+기본 최대 실행 시간은 기준 저장소의 실험 시간에 맞춰 OOM 1500초, CPU 900초, Deadlock 600초다.
+
+빠른 동작 확인만 할 때는 다음처럼 줄일 수 있지만, 짧은 실행은 실제 장애 재현 증거로 제출하면 안 된다.
+
+```bash
+MAX_RUNTIME=30 EVIDENCE_INTERVAL=2 bash run_case.sh deadlock baseline
+```
+
+- `BOOT_TIMEOUT`: 부팅 대기 시간 (기본 30초)
+- `EVIDENCE_INTERVAL`: 증거 수집 간격 (기본 3초)
+- `OBSERVE_SECONDS`: 양수 지정 시 해당 시간 후 증거 수집만 중단하고 앱은 계속 실행
+- `MAX_RUNTIME`: 최대 실행 시간 (케이스별 기본값 적용)
+
+## 6. 증거 저장 위치
+
+각 실행 결과는 다음 구조로 저장된다.
+
+```text
+$AGENT_HOME/evidence/<case>/<timestamp>_<profile>_<random>/
+├── config.env
+├── run-summary.txt
+├── app.pid
+├── target.pid
+├── application-stdout.log
+├── app-logs/
+│   ├── agent_app.log
+│   └── monitor.log
+├── process-snapshots.log
+├── monitor-snapshots.log
+├── collector-errors.log
+├── oom-diagnostics.log       # OOM만
+├── oom-diagnostics.csv       # OOM만
+├── cpu-process.log           # CPU만
+├── cpu-process.csv           # CPU만
+├── deadlock-diagnostics.log  # Deadlock만
+└── deadlock-diagnostics.csv  # Deadlock만
+```
+
+각 케이스의 baseline과 adjusted를 각각 실행한 뒤 `run-summary.txt`, CSV, 로그를 비교해 리포트를 작성한다.
+
+## 7. 환경 정리
+
+실험 종료 후 VM을 삭제하려면 제공된 `remove.sh`를 사용할 수 있다.
+
+```bash
+bash remove.sh -n <VM_NAME>
+# 또는
+bash remove.sh --name <VM_NAME>
+```
+
+## 8. 검증 범위 및 주의 사항
+
+스크립트 문법 검사(`bash -n`)와 임시 모의 앱/모의 monitor를 이용한 OOM·CPU·Deadlock 실행 흐름 및 수집기 smoke test를 통과했다.
+
+실제 제공 바이너리와 수업 서버에 접속할 수 없으므로, 실제 바이너리의 장애 발생 시점과 최종 Before/After 결과까지 여기서 검증한 것은 아니다.
+
+실제 실행 결과의 `run-summary.txt`와 `collector-errors.log`를 확인하고, 수집된 증거를 바탕으로 장애 분석 리포트를 작성한다.
