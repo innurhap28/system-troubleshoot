@@ -23,7 +23,7 @@ OrbStack이 설치되어 있어야 합니다. 스크립트가 Ubuntu 24.04 amd64
 기본 VM 이름은 `sys-trouble`이고, Linux 사용자는 호스트 사용자 이름과 같습니다. 새 VM의 이름, 사용자, 아키텍처는 `VM_NAME`, `VM_USER`, `VM_ARCH`로 지정할 수 있습니다.
 
 ```bash
-VM_NAME=troubleshooting-lab VM_USER=student ./scripts/setup_vm.sh
+VM_NAME=sys-trouble VM_USER=student ./scripts/setup_vm.sh
 ```
 
 설정이 끝나면 다음과 같이 VM에 접속합니다.
@@ -43,8 +43,8 @@ source ~/agent-app/env.sh
 
 | 장애 유형 | 기준 설정 `baseline` | 조정 설정 `adjusted` |
 |---|---|---|
-| `oom` | `MEMORY_LIMIT=128` MB | `MEMORY_LIMIT=512` MB |
-| `cpu` | `CPU_MAX_OCCUPY=10`% | `CPU_MAX_OCCUPY=100`% |
+| `oom` | `MEMORY_LIMIT=356` MB | `MEMORY_LIMIT=512` MB |
+| `cpu` | `CPU_MAX_OCCUPY=80`% | `CPU_MAX_OCCUPY=10`% |
 | `deadlock` | `MULTI_THREAD_ENABLE=true` | `MULTI_THREAD_ENABLE=false` |
 
 예를 들어 CPU 조정 결과는 `~/agent-app/bin/run_case.sh cpu adjusted`로 실행합니다. OOM·CPU 비교는 교착상태가 섞이지 않도록 멀티스레드를 끄며, 교착상태는 별도 케이스에서만 비교합니다. 앱은 root가 아닌 VM 사용자로 실행됩니다. 교착상태처럼 앱이 종료되지 않으면 `Ctrl-C` 또는 `OBSERVE_SECONDS=30`으로 관제 수집만 멈출 수 있으며, 실행 중인 앱은 남겨 두어 PID와 스레드 상태를 추가로 확인할 수 있습니다. 종료할 때 출력된 `kill <PID>` 명령을 사용합니다.
