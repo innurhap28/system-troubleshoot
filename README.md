@@ -7,17 +7,9 @@
 - `cpu_spike.sh`: 앱 내부 Current Load, 프로세스 CPU, 시스템 load average 수집
 - `deadlock_test.sh`: 프로세스/스레드 상태, CPU tick, 로그 정체 시간 수집
 
-기존 배포된 `$AGENT_HOME/bin/monitor.sh`를 함께 호출한다. 앱 로그(`agent_app.log`)와 앱 stdout/stderr는 서로 다른 파일로 보존한다.
+## 2. 실행
 
-## 2. 설치 위치
-
-네 파일을 같은 디렉터리에 둔다. `run_case.sh`는 진단 스크립트를 `$AGENT_HOME/bin/`에서 먼저 찾고, 없으면 자기 파일과 같은 디렉터리에서 찾는다.
-
-앱 바이너리는 GitHub 기준 경로인 `$AGENT_HOME/agent-leak-app`을 우선 사용한다. 기존 배포본 `$AGENT_HOME/bin/agent-leak-app` 또는 `$AGENT_HOME/bin/agent-leak-app-x86`도 지원한다.
-
-## 3. 실행
-
-`agent-admin` 일반 사용자로 실행한다. root 실행은 미션 조건에 따라 거부한다.
+`agent-admin` 일반 사용자로 실행한다.
 
 ```bash
 cd /system-troubleshoot
@@ -32,9 +24,7 @@ bash run_case.sh deadlock baseline
 bash run_case.sh deadlock adjusted
 ```
 
-환경변수는 GitHub 기준 저장소처럼 로그인 셸의 환경변수를 사용한다. `AGENT_HOME`, `AGENT_PORT`, `AGENT_UPLOAD_DIR`, `AGENT_KEY_PATH`, `AGENT_LOG_DIR`가 이미 설정돼 있으면 그 값을 사용한다. `$HOME/agent-app/env.sh`가 있으면 먼저 읽는다. 미설정 시 기준 저장소 기본 경로를 사용한다.
-
-## 4. 실험 설정
+## 3. 실험 설정
 
 | 케이스 | baseline | adjusted |
 |---|---|---|
@@ -48,11 +38,10 @@ bash run_case.sh deadlock adjusted
 - CPU: MEMORY_LIMIT=512, MULTI_THREAD_ENABLE=false
 - Deadlock: MEMORY_LIMIT=512, CPU=10
 
-## 5. 실행 시간 조정
+## 4. 실행 시간 조정
 
-기본 최대 실행 시간은 기준 저장소의 실험 시간에 맞춰 OOM 1500초, CPU 900초, Deadlock 600초다.
-
-빠른 동작 확인만 할 때는 다음처럼 줄일 수 있지만, 짧은 실행은 실제 장애 재현 증거로 제출하면 안 된다.
+기본 최대 실행 시간은 OOM 1500초, CPU 900초, Deadlock 600초다.
+실행 시간 등의 변수값을 변경한 실험은 다음과 같이 진행한다. 
 
 ```bash
 MAX_RUNTIME=30 EVIDENCE_INTERVAL=2 bash run_case.sh deadlock baseline
@@ -63,7 +52,7 @@ MAX_RUNTIME=30 EVIDENCE_INTERVAL=2 bash run_case.sh deadlock baseline
 - `OBSERVE_SECONDS`: 양수 지정 시 해당 시간 후 증거 수집만 중단하고 앱은 계속 실행
 - `MAX_RUNTIME`: 최대 실행 시간 (케이스별 기본값 적용)
 
-## 6. 증거 저장 위치
+## 5. 증거 저장 위치
 
 각 실행 결과는 다음 구조로 저장된다.
 
@@ -88,9 +77,9 @@ $AGENT_HOME/evidence/<case>/<timestamp>_<profile>_<random>/
 └── deadlock-diagnostics.csv  # Deadlock만
 ```
 
-각 케이스의 baseline과 adjusted를 각각 실행한 뒤 `run-summary.txt`, CSV, 로그를 비교해 리포트를 작성한다.
+각 케이스의 baseline과 adjusted를 각각 실행한 뒤 `run-summary.txt`, CSV, 로그 등을 비교해 리포트를 작성한다.
 
-## 7. 환경 정리
+## 6. 환경 정리
 
 실험 종료 후 VM을 삭제하려면 제공된 `remove.sh`를 사용할 수 있다.
 
@@ -99,11 +88,3 @@ bash remove.sh -n <VM_NAME>
 # 또는
 bash remove.sh --name <VM_NAME>
 ```
-
-## 8. 검증 범위 및 주의 사항
-
-스크립트 문법 검사(`bash -n`)와 임시 모의 앱/모의 monitor를 이용한 OOM·CPU·Deadlock 실행 흐름 및 수집기 smoke test를 통과했다.
-
-실제 제공 바이너리와 수업 서버에 접속할 수 없으므로, 실제 바이너리의 장애 발생 시점과 최종 Before/After 결과까지 여기서 검증한 것은 아니다.
-
-실제 실행 결과의 `run-summary.txt`와 `collector-errors.log`를 확인하고, 수집된 증거를 바탕으로 장애 분석 리포트를 작성한다.
