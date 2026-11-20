@@ -90,8 +90,6 @@ bash scripts/run_case.sh oom adjusted
 
 `oom_test.sh`는 `/proc/[PID]/status`와 `/proc/[PID]/smaps_rollup`을 이용해 RSS, VSZ, PSS 등의 메모리 정보를 수집한다.
 
-**(여기에 기준 실험과 조치 실험의 `config.env`, `run-summary.txt`를 각각 첨부!)**
-
 ### 2.2 시스템 관제 데이터
 
 `monitor.sh`를 통해 수집한 데이터를 분석한 결과, 프로세스의 상주 메모리(RSS)가 실행 시간에 따라 지속적으로 증가하는 패턴을 확인했다.
@@ -114,8 +112,6 @@ bash scripts/run_case.sh oom adjusted
 관제 데이터에서 RSS가 약 18MB에서 268MB까지 증가한 것을 확인할 수 있다.
 
 이는 일시적인 메모리 사용량 증가가 아니라, 프로세스가 실행되는 동안 메모리 점유량이 지속적으로 증가하는 패턴임을 보여준다.
-
-**(여기에 `monitor-snapshots.log` 전체 데이터 또는 메모리 사용량 변화 그래프를 첨부!)**
 
 ### 2.3 애플리케이션 로그
 
@@ -155,8 +151,6 @@ bash scripts/run_case.sh oom adjusted
 
 따라서 이번 장애는 메모리 증가 현상과 애플리케이션의 메모리 보호 정책에 의한 종료가 연속적으로 발생한 사례다.
 
-**(여기에 `application-stdout.log`의 MemoryWorker 및 MemoryGuard 로그 원본을 첨부!)**
-
 ### 2.4 프로세스 진단 결과
 
 기준 실험의 `run-summary.txt`와 `config.env`를 확인한 결과는 다음과 같다.
@@ -174,8 +168,6 @@ bash scripts/run_case.sh oom adjusted
 `APP_EXIT_STATUS=137`은 일반적으로 SIGKILL(9)에 해당하는 종료 상태다. 다만 이 값만으로 운영체제의 OOM Killer가 프로세스를 종료했다고 단정할 수는 없다.
 
 이번 사례에서는 종료 직전 애플리케이션 로그에 `MemoryGuard`의 `Self-terminating process` 메시지가 남아 있으므로, 애플리케이션 내부 보호 정책이 종료를 실행했다는 점을 주요 근거로 판단한다.
-
-**(여기에 기준 실험의 `run-summary.txt`와 `oom-diagnostics.log`에서 PID 및 프로세스 종료 관련 부분을 첨부!)**
 
 ## 3. Root Cause Analysis (원인 분석)
 
@@ -265,8 +257,6 @@ bash scripts/run_case.sh oom adjusted
 조치 실험에서도 Heap 사용량은 지속적으로 증가하여 400MB까지 도달했다.
 
 이는 메모리 제한을 상향한 뒤에도 메모리 증가 현상 자체는 사라지지 않았다는 것을 보여준다.
-
-**(여기에 조치 실험의 `application-stdout.log`에서 375MB~400MB 구간과 `run-summary.txt`의 1,500초 실행 결과를 첨부!)**
 
 ### 4.3 검증 결과
 

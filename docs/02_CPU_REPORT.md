@@ -100,8 +100,6 @@ CPU 전용 수집기인 `cpu_spike.sh`는 다음 정보를 수집한다.
 - `cpu-process.csv`: 시간별 CPU 측정 데이터
 - `agent_app.log`: 애플리케이션 실행 로그
 
-**(여기에 기준 실험과 조치 실험의 `config.env`, `run-summary.txt`를 각각 첨부!)**
-
 ### 2.2 시스템 관제 데이터
 
 `cpu-process.log`에서 수집한 기준 실험의 초기 스냅샷은 다음과 같다.
@@ -129,10 +127,6 @@ PID    PPID %CPU   RSS    VSZ STAT NI ELAPSED CMD
 이 자료는 실험 초반의 상태를 보여주므로, 장애 직전의 실제 CPU 사용률을 판단하는 근거로 사용할 수는 없다.
 
 한편 애플리케이션 로그에서는 장애 직전 내부 부하 지표가 50.64%까지 증가한 사실이 확인되었다.
-
-**(여기에 `cpu-process.csv`를 이용한 시간별 Process CPU 및 APP_CURRENT_LOAD 변화 그래프를 첨부!)**
-
-**(여기에 임계치 초과 직전의 `top`, `ps` 결과를 첨부! 초기 스냅샷과 장애 직전의 OS CPU 사용률을 비교할 수 있도록 수집할 것.)**
 
 ### 2.3 애플리케이션 로그
 
@@ -162,8 +156,6 @@ PID    PPID %CPU   RSS    VSZ STAT NI ELAPSED CMD
 
 다만 `Maximum CPU Limit: 80%`와 실제 임계치 초과 시점인 50.64% 사이의 관계는 제공된 로그만으로 명확하게 확인되지 않는다. 따라서 80%가 실제 종료 임계치인지, 별도의 내부 임계값이 존재하는지 추가 확인이 필요하다.
 
-**(여기에 `agent_app.log`의 전체 CPU 관련 로그와 종료 직전 로그를 첨부!)**
-
 ### 2.4 프로세스 진단 결과
 
 기준 실험의 `run-summary.txt`와 `cpu-process.log`에서 확인한 주요 결과는 다음과 같다.
@@ -185,8 +177,6 @@ PID    PPID %CPU   RSS    VSZ STAT NI ELAPSED CMD
 이는 프로세스가 SIGTERM을 받아 종료되었을 가능성을 뒷받침하지만, 종료 코드만으로 Watchdog이 직접 종료를 실행했다고 확정할 수는 없다.
 
 애플리케이션 로그에서는 `CPU Threshold Violated!`가 확인되므로 CPU 임계치 초과가 종료 직전 발생한 사실은 확인할 수 있다. 다만 실제 종료 주체와 Watchdog의 동작 여부를 확정하려면 종료 관련 로그를 추가로 확인해야 한다.
-
-**(여기에 `run-summary.txt`의 종료 상태와 `agent_app.log`의 WATCHDOG, SIGTERM, EMERGENCY ABORT 관련 로그를 첨부!)**
 
 ## 3. Root Cause Analysis (원인 분석)
 
@@ -267,10 +257,6 @@ PID    PPID %CPU   RSS    VSZ STAT NI ELAPSED CMD
 ```
 
 위 로그는 내부 부하가 10%에 도달했을 때 Cooldown 동작이 시작되고, 부하가 5%로 감소한 뒤 다시 증가하는 제어 사이클이 수행되었음을 보여준다.
-
-**(여기에 조치 실험의 `agent_app.log`에서 Peak reached 및 Cooldown 관련 로그를 연속으로 첨부!)**
-
-**(여기에 조치 실험의 `cpu-process.csv`에서 APP_CURRENT_LOAD와 PROCESS_CPU의 변화 데이터를 첨부!)**
 
 ### 4.3 검증 결과
 

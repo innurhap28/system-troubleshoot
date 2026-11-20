@@ -108,8 +108,6 @@ Deadlock 전용 수집기인 `deadlock_test.sh`는 다음 정보를 수집한다
 - `deadlock-diagnostics.csv`: 시간별 CPU, RSS, 로그 변화 및 정체 판정 데이터
 - `application-stdout.log`: 애플리케이션 실행 로그
 
-**(여기에 기준 실험과 조치 실험의 `config.env`, `run-summary.txt`를 각각 첨부!)**
-
 ### 2.2 시스템 관제 데이터
 
 기준 실험의 `deadlock-diagnostics.log`에서 수집한 프로세스 및 스레드 상태는 다음과 같다.
@@ -150,10 +148,6 @@ TID=41956 COMM=agent-leak-app- STATE=S WCHAN=__futex_wait
 특히 `ps -L` 결과에서 메인 스레드는 `futex_wait`, 나머지 두 스레드는 `do_select`로 기록되었다. 따라서 두 워커 스레드가 모두 커널 수준에서 Futex Lock을 기다리고 있었다고 단정하지 않는다.
 
 이번 실험에서 교착 상태를 판단하는 핵심 근거는 애플리케이션 로그에 기록된 두 워커의 상호 자원 대기 관계이며, 커널 진단 자료는 프로세스가 종료되지 않은 채 대기 상태를 유지했다는 점을 보조적으로 뒷받침한다.
-
-**(여기에 `deadlock-diagnostics.csv`의 반복 측정 결과를 첨부! CPU tick, RSS, 로그 크기, 스레드 상태가 시간에 따라 어떻게 변화했는지 확인할 것.)**
-
-**(여기에 장애 발생 이후 반복 수집된 `ps -L`, `top -H`, `/proc/[PID]/task/[TID]/wchan` 결과를 첨부!)**
 
 ### 2.3 애플리케이션 로그
 
@@ -297,14 +291,6 @@ Mutual Exclusion은 사용된 자원이 배타적 Lock으로 동작한다는 전
 기준 실험에서는 멀티스레드 모드가 활성화된 상태에서 두 워커의 상호 자원 대기 로그가 확인되었다.
 
 조치 실험에서는 멀티스레드 모드를 비활성화한 상태로 동일한 시간 동안 관측을 수행했다.
-
-다만 현재 제공된 조치 실험 자료에는 실제 워커 작업 완료 로그와 스레드 상태 변화가 포함되어 있지 않다. 따라서 실행 요약 파일만으로 교착 상태가 완전히 해소되었다고 확정할 수는 없다.
-
-**(여기에 조치 실험의 `application-stdout.log`에서 Worker 작업 시작 및 완료 로그를 첨부!)**
-
-**(여기에 조치 실험의 `deadlock-diagnostics.log`에서 프로세스 및 스레드 상태를 첨부!)**
-
-**(여기에 조치 실험의 `deadlock-diagnostics.csv`에서 CPU tick, RSS, 로그 크기 변화 및 CLASSIFICATION을 첨부!)**
 
 ### 4.3 검증 결과
 
